@@ -27,7 +27,7 @@ class JWTController extends Controller
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|min:2|max:100',
             'last_name' => 'required|string|min:2|max:100',
-            'middle_name' => 'string|min:2|max:100',
+            'middle_name' => 'nullable|string|min:2|max:100',
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|confirmed|min:6',
         ]);
