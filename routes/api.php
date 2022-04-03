@@ -13,8 +13,10 @@ Route::group([], function($router) {
     // AUTHORIZATION PART
     Route::group(['prefix' => 'auth'], function() {
         Route::post('/register', [JWTController::class, 'register']);
+        Route::post('/forgot-password', [JWTController::class, 'forgotPassword']);
         Route::post('/login', [JWTController::class, 'login']);
-        Route::get('/verify/{token}', [JWTController::class, 'verifyAccount'])->name('api.user.verify');
+        Route::post('/accept-email', [JWTController::class, 'verifyAccount']);
+        Route::post('/reset-password', [JWTController::class, 'resetPassword']);
         Route::post('/logout', [JWTController::class, 'logout']);
         Route::post('/refresh', [JWTController::class, 'refresh']);
         Route::post('/profile', [JWTController::class, 'profile']);

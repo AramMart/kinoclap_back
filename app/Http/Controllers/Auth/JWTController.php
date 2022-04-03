@@ -14,7 +14,7 @@ class JWTController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.custom_auth', ['except' => ['login', 'register', 'verifyAccount']]);
+        $this->middleware('jwt.custom_auth', ['except' => ['login', 'register', 'verifyAccount', 'forgotPassword', 'resetPassword']]);
     }
 
     /**
@@ -54,7 +54,7 @@ class JWTController extends Controller
                 'last_name' => $user->last_name,
                 'middle_name' => $user->middle_name,
                 'welcome_to' => env('MAIL_FROM_NAME'),
-                'verification_token' => $email_verification_token
+                'url' => env('FRONT_URL').'/'.env('FRONT_ACCEPT_EMAIL').'/'.$email_verification_token
             ],
             function ($message) use ($user) {
                 $message->to($user->email, $user->first_name)
@@ -69,21 +69,39 @@ class JWTController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param $token
      * @return \Illuminate\Http\JsonResponse
      */
-    public function verifyAccount(Request $request, $token)
+    public function verifyAccount()
     {
-        $user = User::where('email_verification_token', $token)->first();
-        $message = 'Sorry your email cannot be identified.';
+        $user = User::where('email_verification_token', request()->get('token'))->first();
         if(!is_null($user)) {
             $user->email_verification_token = null;
             $user->is_email_verified = true;
             $user->save();
-            $message = "Your e-mail is verified. You can now login.";
+            return response()->json(['message' => "Your e-mail is verified. You can now login."]);
         }
-        return response()->json(['message' => $message], 200);
+        return response()->json(['message' => 'Sorry your email cannot be identified.'], 422);
+    }
+
+    public function resetPassword()
+    {
+        $user = User::where('email_verification_token', request()->get('token'))->first();
+        if(!is_null($user)) {
+            $validator = Validator::make(request()->all(), [
+                'password' => 'required|string|confirmed|min:6',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            }
+
+            $user->password = Hash::make(request()->get('password'));
+            $user->email_verification_token = null;
+            $user->save();
+
+            return response()->json(['message' => "Password changed successfully"]);
+        }
+        return response()->json(['message' => 'Sorry cannot be identify user'], 422);
     }
 
     /**
@@ -109,10 +127,41 @@ class JWTController extends Controller
         $user = User::where('email', $request->get('email'))->first();
 
         if (!$user->is_email_verified) {
-            return response()->json(['message' => 'Verify your email'], 404);
+            return response()->json(['message' => 'Verify your email'], 422);
         }
 
         return $this->respondWithToken($token);
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $user = User::where('email', $request->get('email'))->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Invalid email'], 422);
+        }
+
+        if (!$user->is_email_verified) {
+            return response()->json(['message' => 'First verify your email'], 422);
+        }
+
+        $email_verification_token = Str::random(64);
+        $user->email_verification_token = $email_verification_token;
+        $user->save();
+
+        Mail::send(
+            'auth.forgot-password',
+            [
+             'welcome_to' => env('MAIL_FROM_NAME'),
+             'url' => env('FRONT_URL').'/'.env('FRONT_CREATE_NEW_PASSWORD').'/'.$email_verification_token
+            ],
+            function ($message) use ($user) {
+                $message->to($user->email, $user->first_name)
+                    ->subject('Change Password');
+            }
+        );
+
+        return response()->json(['message' => 'Check Your email']);
     }
 
     /**
