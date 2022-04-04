@@ -71,7 +71,7 @@ Route::group([], function($router) {
     });
 
     Route::group(['prefix' => 'category'], function() {
-        Route::get('/',[CategoryController::class, 'index']);
+        Route::post('/',[CategoryController::class, 'index']);
         // Sub Categories
         Route::get('/{id}/sub-categories',[SubCategoryController::class, 'index']);
     });
