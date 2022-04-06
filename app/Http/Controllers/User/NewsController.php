@@ -17,13 +17,23 @@ class NewsController extends Controller
 
     public function index(Request $request)
     {
-        $type = $request->get('type');
-        if (!in_array($type, ['user','guest', 'all']) || (!auth()->user() && $type === 'user')) {
-            return response()->json(['message' => 'Invalid type']);
+        $types = $request->get('types');
+        $validTypes = true;
+        for ($i = 0; $i < count($types); $i++) {
+            if (!in_array($types[$i], ['user','guest', 'all'])) {
+                $validTypes = false;
+            }
         }
 
-        $newses = News::with('resources')->where('type', $type)->get();
-        return response()->json(['data'=> $newses],200);
+        if (!$validTypes || (!auth()->user() && in_array('user', $types))) {
+            return response()->json(['message' => 'Invalid type'], 422);
+        }
+
+        $newses = News::with('resources')
+            ->where('active', true)
+            ->whereIn('type', $types)->get();
+
+        return response()->json($newses);
     }
 
     public function indexAdmin()
@@ -57,7 +67,7 @@ class NewsController extends Controller
         $news = News::create($validator->validate());
         $news->resources()->attach($resources);
 
-        if($news->id){
+        if($news->id) {
             return response()->json(['message' => 'News Created','data'=> $news],200);
         }
         return response()->json(['message'=> 'News not created.','data'=>null],400);

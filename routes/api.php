@@ -77,7 +77,7 @@ Route::group([], function($router) {
     });
 
     Route::group(['prefix' => 'news'], function() {
-        Route::get('/',[NewsController::class, 'index']);
+        Route::post('/',[NewsController::class, 'index']);
     });
     // Advertisements
     Route::group(['prefix' => 'advertisement'], function() {
