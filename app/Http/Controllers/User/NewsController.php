@@ -17,23 +17,17 @@ class NewsController extends Controller
 
     public function index(Request $request)
     {
-        $types = $request->get('types');
-        $validTypes = true;
-        for ($i = 0; $i < count($types); $i++) {
-            if (!in_array($types[$i], ['user','guest', 'all'])) {
-                $validTypes = false;
-            }
+        try {
+            $types = $request->get('types');
+
+            $newses = News::with('resources')
+                ->where('active', true)
+                ->whereIn('type', $types)->get();
+
+            return response()->json($newses);
+        } catch (\Exception $e) {
+            return response()->json([], 500);
         }
-
-        if (!$validTypes || (!auth()->user() && in_array('user', $types))) {
-            return response()->json(['message' => 'Invalid type'], 422);
-        }
-
-        $newses = News::with('resources')
-            ->where('active', true)
-            ->whereIn('type', $types)->get();
-
-        return response()->json($newses);
     }
 
     public function indexAdmin()

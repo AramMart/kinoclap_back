@@ -18,19 +18,23 @@ class AdvertisementController extends Controller
 
     public function index(Request $request)
     {
-        $type = $request->get('type');
-        if (!in_array($type, ['suggest','search'])) {
-            return response()->json(['message' => 'Invalid type']);
-        }
+        try {
+            $types = $request->get('types');
 
-        $advertisements = Advertisement::with('resources')->where('type', $type)->get();
-        return response()->json(['data'=> $advertisements],200);
+            $advertisements = Advertisement::with('resources')
+                ->where('active', true)
+                ->whereIn('type', $types)->get();
+
+            return response()->json($advertisements);
+        } catch (\Exception $exception) {
+            return response()->json([], 500);
+        }
     }
 
     public function single($id)
     {
         $advertisement = Advertisement::with('resources')->find($id);
-        return response()->json(['data'=> $advertisement],200);
+        return response()->json(['data' => $advertisement], 200);
     }
 
 
@@ -45,24 +49,24 @@ class AdvertisementController extends Controller
             'resources.*' => 'numeric',
         ]);
 
-        if($validator->fails()){
-            return response()->json(['message'=> $validator->messages(),'data'=> null],400);
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->messages(), 'data' => null], 400);
         }
 
         $resources = Resource::find(request()->get('resources'));
         $advertisement = Advertisement::create($validator->validate());
         $advertisement->resources()->attach($resources);
 
-        if($advertisement->id){
-            return response()->json(['message' => 'Advertisement Created','data'=> $advertisement],200);
+        if ($advertisement->id) {
+            return response()->json(['message' => 'Advertisement Created', 'data' => $advertisement], 200);
         }
-        return response()->json(['message'=> 'Advertisement not created.','data'=>null],400);
+        return response()->json(['message' => 'Advertisement not created.', 'data' => null], 400);
     }
 
 
     public function delete($id)
     {
         $deleted = Advertisement::destroy($id);
-        return response()->json(['message' => $deleted ? 'Advertisement deleted successfully': 'Something went wrong!']);
+        return response()->json(['message' => $deleted ? 'Advertisement deleted successfully' : 'Something went wrong!']);
     }
 }

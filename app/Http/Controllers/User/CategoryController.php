@@ -16,23 +16,17 @@ class CategoryController extends Controller
 
     public function index(Request $request)
     {
-        $types = $request->get('types');
-        $validTypes = true;
-        for ($i = 0; $i < count($types); $i++) {
-            if (!in_array($types[$i], ['user','guest', 'all'])) {
-                $validTypes = false;
-            }
-        }
+      try {
+          $types = $request->get('types');
 
-        if (!$validTypes || (!auth()->user() && in_array('user', $types))) {
-            return response()->json(['message' => 'Invalid type'], 422);
-        }
+          $categories = Category::with('subCategories')
+              ->where('active', true)
+              ->whereIn('type', $types)->get();
 
-        $categories = Category::with('subCategories')
-            ->where('active', true)
-            ->whereIn('type', $types)->get();
-
-        return response()->json($categories);
+          return response()->json($categories);
+      } catch (\Exception $exception) {
+          return response()->json([], 500);
+      }
     }
 
     public function indexAdmin()
