@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -37,7 +38,7 @@ class CategoryController extends Controller
 
     public function single($id)
     {
-        $category = Category::with('subCategories')->find($id);
+        $category = Category::find($id);
         return response()->json($category);
     }
 
@@ -57,6 +58,7 @@ class CategoryController extends Controller
         }
         return response()->json(['message'=> 'Category not created.'],400);
     }
+
 
     public function delete($id)
     {

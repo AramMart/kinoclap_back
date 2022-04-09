@@ -73,7 +73,7 @@ Route::group([], function($router) {
     Route::group(['prefix' => 'category'], function() {
         Route::post('/',[CategoryController::class, 'index']);
         // Sub Categories
-        Route::get('/{id}/sub-categories',[SubCategoryController::class, 'index']);
+        Route::get('/sub-categories/{id}',[SubCategoryController::class, 'single']);
     });
 
     Route::group(['prefix' => 'news'], function() {
@@ -81,7 +81,7 @@ Route::group([], function($router) {
     });
     // Advertisements
     Route::group(['prefix' => 'advertisement'], function() {
-        Route::post('/',[AdvertisementController::class, 'index']);
+        Route::post('/filter',[AdvertisementController::class, 'index']);
         Route::get('/{id}',[AdvertisementController::class, 'single']);
         Route::post('/create',[AdvertisementController::class, 'create']);
         Route::delete('/delete/{id}',[AdvertisementController::class, 'delete']);

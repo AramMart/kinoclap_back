@@ -7,39 +7,52 @@ use App\Models\Advertisement;
 use App\Models\News;
 use App\Models\Resource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AdvertisementController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.custom_auth', ['except' => []]);
+        $this->middleware('jwt.custom_auth', ['except' => ['single', 'index']]);
     }
 
-    public function index(Request $request)
+    public function index()
     {
         try {
-            $types = $request->get('types');
+            $types = request()->get('types');
+            $subCategoryId = request()->get('subCategoryId');
 
-            $advertisements = Advertisement::with('resources')
-                ->where('active', true)
-                ->whereIn('type', $types)->get();
+            $advertisements = Advertisement::with('resources','user')->where('active', true);
 
-            return response()->json($advertisements);
+            if ($subCategoryId) {
+               $advertisements->whereHas('sub_category',function ($q) use ($subCategoryId) {
+                   $q->where('id', $subCategoryId);
+               });
+            }
+
+            if (!is_null($types) and count($types)) {
+                $advertisements->whereIn('type', $types);
+            }
+
+            $data = $advertisements->get();
+
+            return response()->json($data);
         } catch (\Exception $exception) {
-            return response()->json([], 500);
+            return response()->json([$exception->getMessage()], 500);
         }
     }
 
     public function single($id)
     {
-        $advertisement = Advertisement::with('resources')->find($id);
-        return response()->json(['data' => $advertisement], 200);
+        $advertisement = Advertisement::with('resources', 'user', 'sub_category')->where('active', true)->find($id);
+        return response()->json($advertisement);
     }
 
 
     public function create()
     {
+        $user = auth()->user();
         $validator = Validator::make(request()->all(), [
             'title' => 'required|string|min:3|max:255',
             'description' => 'required|string|min:3',
@@ -54,7 +67,8 @@ class AdvertisementController extends Controller
         }
 
         $resources = Resource::find(request()->get('resources'));
-        $advertisement = Advertisement::create($validator->validate());
+
+        $advertisement = Advertisement::create(array_merge($validator->validate(), ['user_id' => $user->id]));
         $advertisement->resources()->attach($resources);
 
         if ($advertisement->id) {

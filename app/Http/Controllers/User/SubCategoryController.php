@@ -10,13 +10,21 @@ class SubCategoryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.custom_auth', ['except' => ['index']]);
+        $this->middleware('jwt.custom_auth', ['except' => ['index', 'single']]);
     }
 
     public function index($id)
     {
-        $subCategories = SubCategory::where('category_id', $id)->get();
-        return response()->json(['data'=> $subCategories],200);
+        $subCategories = SubCategory::whereHas('category', function ($q) use ($id) {
+            $q->where('id', $id);
+        })->paginate(10);
+        return response()->json($subCategories);
+    }
+
+    public function single($id)
+    {
+        $subCategory = SubCategory::with('category')->find($id);
+        return response()->json($subCategory);
     }
 
     public function create($id)
