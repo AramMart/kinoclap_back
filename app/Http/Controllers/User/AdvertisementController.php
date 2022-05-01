@@ -72,9 +72,9 @@ class AdvertisementController extends Controller
         $advertisement->resources()->attach($resources);
 
         if ($advertisement->id) {
-            return response()->json(['message' => 'Advertisement Created', 'data' => $advertisement], 200);
+            return response()->json($advertisement);
         }
-        return response()->json(['message' => 'Advertisement not created.', 'data' => null], 400);
+        return response()->json(['message' => 'Advertisement not created.'], 400);
     }
 
 
