@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Resource;
+use Illuminate\Support\Facades\Validator;
 
 class ResourceController extends Controller
 {
@@ -14,6 +15,15 @@ class ResourceController extends Controller
 
     public function create()
     {
+
+        $validator = Validator::make(request()->all(), [
+            'file' => 'required|mimes:mp4,jpe,png,jpeg,jpg | max:15936768',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first()], 400);
+        }
+
         if (request()->hasFile('file') && request()->get('type')) {
             $path = request()->file('file')->store('');
             $resource = Resource::create([

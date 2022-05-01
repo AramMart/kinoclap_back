@@ -63,7 +63,7 @@ class AdvertisementController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->messages(), 'data' => null], 400);
+            return response()->json(['message' => $validator->errors()->first() ], 400);
         }
 
         $resources = Resource::find(request()->get('resources'));
