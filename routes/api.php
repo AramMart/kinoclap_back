@@ -82,6 +82,7 @@ Route::group([], function($router) {
     // Advertisements
     Route::group(['prefix' => 'advertisement'], function() {
         Route::post('/filter',[AdvertisementController::class, 'index']);
+        Route::get('/filter/my',[AdvertisementController::class, 'userAdvertisements']);
         Route::get('/{id}',[AdvertisementController::class, 'single']);
         Route::post('/create',[AdvertisementController::class, 'create']);
         Route::delete('/delete/{id}',[AdvertisementController::class, 'delete']);

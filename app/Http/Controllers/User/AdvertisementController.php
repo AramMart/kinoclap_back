@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Advertisement;
 use App\Models\News;
 use App\Models\Resource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -41,6 +42,20 @@ class AdvertisementController extends Controller
         } catch (\Exception $exception) {
             return response()->json([$exception->getMessage()], 500);
         }
+    }
+
+    public function userAdvertisements() {
+        $user = auth()->user();
+
+        if (!$user) { return response()->json([], 403); }
+
+        $advertisements = Advertisement::whereHas('user',function(Builder $query) use ($user){
+            $query->where( 'user_id' , $user->id );
+        })->with('resources')->where('active', true);
+
+        $data = $advertisements->get();
+
+        return response()->json($data);
     }
 
     public function single($id)
