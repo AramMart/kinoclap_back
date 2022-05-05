@@ -34,11 +34,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(UserProfile::class);
     }
 
-    public function resources()
-    {
-        return $this->belongsToMany(Resource::class);
-    }
-
     /**
      * The attributes that should be hidden for serialization.
      *

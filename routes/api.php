@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\JWTController;
+use App\Http\Controllers\User\UserProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\NewsController;
 use App\Http\Controllers\User\CategoryController;
@@ -64,10 +65,10 @@ Route::group([], function($router) {
         Route::post('/', [ResourceController::class, 'create']);
     });
 
-    Route::group(['prefix' => 'user'], function() {
-        Route::get('/{id}',[UserController::class, 'single']);
-        Route::put('/update',[UserController::class, 'update']);
-        Route::put('/resources',[UserController::class, 'updateResources']);
+    Route::group(['prefix' => 'profile'], function() {
+        Route::get('/',[UserProfileController::class, 'single']);
+        Route::put('/',[UserProfileController::class, 'update']);
+        Route::put('/resources',[UserProfileController::class, 'updateResources']);
     });
 
     Route::group(['prefix' => 'category'], function() {

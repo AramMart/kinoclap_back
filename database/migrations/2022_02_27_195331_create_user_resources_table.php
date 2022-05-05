@@ -15,10 +15,10 @@ class CreateUserResourcesTable extends Migration
     {
         Schema::create('user_resources', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')
+            $table->unsignedBigInteger('profile_id');
+            $table->foreign('profile_id')
                 ->references('id')
-                ->on('users')->onDelete('cascade');
+                ->on('user_profiles')->onDelete('cascade');
 
             $table->unsignedBigInteger('resource_id');
             $table->foreign('resource_id')
