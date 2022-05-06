@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\News;
 use App\Models\User;
 use App\Models\UserProfile;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserProfileController extends Controller
 {
@@ -23,7 +26,35 @@ class UserProfileController extends Controller
 
     public function update()
     {
+       try {
+           $validator = Validator::make(request()->all(), [
+               'description' => 'string|min:3',
+               'phone_number' => 'string|min:8|max:12',
+               'profile_image' => 'nullable|numeric',
+               'resume_file' => 'nullable|numeric',
+               'resources' => 'nullable|array',
+               'resources.*' => 'numeric',
+           ]);
 
+           if($validator->fails()){
+               return response()->json(['message'=> $validator->errors()->first()],400);
+           }
+
+           $user = auth()->user();
+           $profile = UserProfile::where('user_id',$user->id)->first();
+           $data = array_merge($validator->validate(), ['user_id' => $user->id]);
+
+           if ($profile && $profile->id) {
+                $profile->update($data);
+           } else {
+               UserProfile::create($data);
+           }
+
+           return response()->json(['message'=> 'Profile updated.']);
+
+       } catch (\Exception $e) {
+           return response()->json(['message'=> $e->getMessage()],400);
+       }
     }
 
     public function updateResources()
