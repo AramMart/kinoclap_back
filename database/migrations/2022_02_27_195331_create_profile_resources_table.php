@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserResourcesTable extends Migration
+class CreateProfileResourcesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateUserResourcesTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_resources', function (Blueprint $table) {
+        Schema::create('profile_resources', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedBigInteger('profile_id');
             $table->foreign('profile_id')
@@ -35,6 +35,6 @@ class CreateUserResourcesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_resources');
+        Schema::dropIfExists('profile_resources');
     }
 }

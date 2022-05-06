@@ -18,8 +18,15 @@ class CreateUserProfilesTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->text('description')->nullable();
             $table->text('phone_number')->nullable();
-            $table->string('profile_image')->nullable();
-            $table->string('resume_file')->nullable();
+            $table->unsignedBigInteger('profile_image')->nullable();
+            $table->foreign('profile_image')
+                ->references('id')
+                ->on('resources')->onDelete('cascade');
+
+            $table->unsignedBigInteger('resume_file')->nullable();
+            $table->foreign('resume_file')
+                ->references('id')
+                ->on('resources')->onDelete('cascade');
 
             $table->foreign('user_id')
                 ->references('id')

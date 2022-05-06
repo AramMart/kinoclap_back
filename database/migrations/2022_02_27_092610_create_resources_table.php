@@ -16,7 +16,7 @@ class CreateResourcesTable extends Migration
         Schema::create('resources', function (Blueprint $table) {
             $table->id();
             $table->string('path');
-            $table->enum('type', ['image', 'video', 'audio']);
+            $table->enum('type', ['image', 'video', 'audio', 'pdf']);
             $table->timestamps();
         });
     }

@@ -17,7 +17,7 @@ class UserProfileController extends Controller
     public function single()
     {
         $id = auth()->user()->id;
-        $user = UserProfile::with(['user', 'resources'])->find($id);
+        $user = User::with(['profile', 'profile.profileImage', 'profile.resumeFile'])->find($id);
         return response()->json($user);
     }
 
