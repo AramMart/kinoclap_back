@@ -67,6 +67,7 @@ Route::group([], function($router) {
 
     Route::group(['prefix' => 'profile'], function() {
         Route::get('/',[UserProfileController::class, 'single']);
+        Route::get('/{userId}',[UserProfileController::class, 'singleById']);
         Route::put('/',[UserProfileController::class, 'update']);
     });
 
