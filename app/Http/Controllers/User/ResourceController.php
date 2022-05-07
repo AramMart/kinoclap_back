@@ -15,9 +15,8 @@ class ResourceController extends Controller
 
     public function create()
     {
-
         $validator = Validator::make(request()->all(), [
-            'file' => 'required|mimes:mp4,jpe,png,jpeg,jpg | max:15936768',
+            'file' => 'required|mimes:mp4,mov,ogg,jpeg,png,pdf,mpeg,mpga,mp3,wav | max:15936768',
         ]);
 
         if ($validator->fails()) {
