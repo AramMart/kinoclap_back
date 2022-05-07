@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Advertisement;
 use App\Models\News;
 use App\Models\Resource;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -24,7 +26,7 @@ class AdvertisementController extends Controller
             $types = request()->get('types');
             $subCategoryId = request()->get('subCategoryId');
 
-            $advertisements = Advertisement::with('resources','user')->where('active', true);
+            $advertisements = Advertisement::with('resources')->where('active', true);
 
             if ($subCategoryId) {
                $advertisements->whereHas('sub_category',function ($q) use ($subCategoryId) {
@@ -60,8 +62,17 @@ class AdvertisementController extends Controller
 
     public function single($id)
     {
-        $advertisement = Advertisement::with('resources', 'user', 'sub_category')->where('active', true)->find($id);
+        $advertisement = Advertisement::with('resources', 'sub_category')->where('active', true)->find($id);
         return response()->json($advertisement);
+    }
+
+    public function getProfileForSingleAdvertisement($id)
+    {
+        $userProfile = User::with(['profile','profile.profileImage'])
+            ->whereHas('advertisements', function ($query) use ($id) {
+                 $query->where('id', $id);
+            })->find($id);
+        return response()->json($userProfile);
     }
 
 

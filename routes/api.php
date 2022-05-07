@@ -84,6 +84,7 @@ Route::group([], function($router) {
         Route::post('/filter',[AdvertisementController::class, 'index']);
         Route::get('/filter/my',[AdvertisementController::class, 'userAdvertisements']);
         Route::get('/{id}',[AdvertisementController::class, 'single']);
+        Route::get('/{id}/profile',[AdvertisementController::class, 'getProfileForSingleAdvertisement']);
         Route::post('/create',[AdvertisementController::class, 'create']);
         Route::delete('/delete/{id}',[AdvertisementController::class, 'delete']);
     });
