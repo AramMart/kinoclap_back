@@ -68,7 +68,6 @@ Route::group([], function($router) {
     Route::group(['prefix' => 'profile'], function() {
         Route::get('/',[UserProfileController::class, 'single']);
         Route::put('/',[UserProfileController::class, 'update']);
-        Route::put('/resources',[UserProfileController::class, 'updateResources']);
     });
 
     Route::group(['prefix' => 'category'], function() {

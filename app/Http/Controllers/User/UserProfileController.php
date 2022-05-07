@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Advertisement;
 use App\Models\News;
+use App\Models\Resource;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,7 +22,7 @@ class UserProfileController extends Controller
     public function single()
     {
         $id = auth()->user()->id;
-        $user = User::with(['profile', 'profile.profileImage', 'profile.resumeFile'])->find($id);
+        $user = User::with(['profile','profile.profileImage', 'profile.resumeFile', 'profile.resources'])->find($id);
         return response()->json($user);
     }
 
@@ -47,8 +49,13 @@ class UserProfileController extends Controller
            if ($profile && $profile->id) {
                 $profile->update($data);
            } else {
-               UserProfile::create($data);
+               $profile = UserProfile::create($data);
            }
+
+           $resources = Resource::find(request()->get('resources'));
+
+           $profile->resources()->detach();
+           $profile->resources()->attach($resources);
 
            return response()->json(['message'=> 'Profile updated.']);
 
@@ -57,8 +64,4 @@ class UserProfileController extends Controller
        }
     }
 
-    public function updateResources()
-    {
-
-    }
 }

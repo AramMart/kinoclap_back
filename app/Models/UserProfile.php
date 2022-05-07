@@ -36,6 +36,6 @@ class UserProfile extends Model
 
     public function resources()
     {
-        return $this->belongsToMany(Resource::class);
+        return $this->belongsToMany(Resource::class, 'profile_resources','profile_id','resource_id');
     }
 }
