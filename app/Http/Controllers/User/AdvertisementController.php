@@ -68,10 +68,9 @@ class AdvertisementController extends Controller
 
     public function getProfileForSingleAdvertisement($id)
     {
-        $userProfile = User::with(['profile','profile.profileImage'])
-            ->whereHas('advertisements', function ($query) use ($id) {
+        $userProfile = User::whereHas('advertisements', function ($query) use ($id) {
                  $query->where('id', $id);
-            })->find($id);
+            })->with(['profile','profile.profileImage'])->first();
         return response()->json($userProfile);
     }
 

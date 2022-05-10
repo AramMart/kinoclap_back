@@ -10,7 +10,7 @@ class ProfessionController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.custom_auth', ['except' => ['index']]);
+        $this->middleware('jwt.custom_auth', ['except' => ['index', 'single']]);
     }
 
     public function index()
@@ -21,6 +21,12 @@ class ProfessionController extends Controller
         } catch (\Exception $exception) {
             return response()->json([], 500);
         }
+    }
+
+    public function single($id)
+    {
+        $profession = Profession::find($id);
+        return response()->json($profession);
     }
 
     public function indexAdmin()

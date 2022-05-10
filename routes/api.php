@@ -75,6 +75,7 @@ Route::group([], function($router) {
     });
 
     Route::group(['prefix' => 'profile'], function() {
+        Route::post('/filter',[UserProfileController::class, 'index']);
         Route::get('/',[UserProfileController::class, 'single']);
         Route::get('/{userId}',[UserProfileController::class, 'singleById']);
         Route::put('/',[UserProfileController::class, 'update']);
@@ -89,8 +90,7 @@ Route::group([], function($router) {
     // Professions
     Route::group(['prefix' => 'professions'], function() {
         Route::get('/',[ProfessionController::class, 'index']);
-        Route::post('/create',[ProfessionController::class, 'create']);
-        Route::delete('/{id}',[ProfessionController::class, 'delete']);
+        Route::get('/{id}',[ProfessionController::class, 'single']);
     });
 
     Route::group(['prefix' => 'news'], function() {
@@ -99,9 +99,9 @@ Route::group([], function($router) {
     // Advertisements
     Route::group(['prefix' => 'advertisement'], function() {
         Route::post('/filter',[AdvertisementController::class, 'index']);
+        Route::get('/{id}/profile',[AdvertisementController::class, 'getProfileForSingleAdvertisement']);
         Route::get('/filter/my',[AdvertisementController::class, 'userAdvertisements']);
         Route::get('/{id}',[AdvertisementController::class, 'single']);
-        Route::get('/{id}/profile',[AdvertisementController::class, 'getProfileForSingleAdvertisement']);
         Route::post('/create',[AdvertisementController::class, 'create']);
         Route::delete('/delete/{id}',[AdvertisementController::class, 'delete']);
     });

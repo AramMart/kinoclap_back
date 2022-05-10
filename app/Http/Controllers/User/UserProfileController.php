@@ -19,6 +19,18 @@ class UserProfileController extends Controller
         $this->middleware('jwt.custom_auth');
     }
 
+    public function index()
+    {
+        $professionId = request()->get('profession_id');
+        $profiles = User::whereHas('profile', function($q) use ($professionId) {
+            if ($professionId) {
+                $q->where('profession_id', $professionId);
+            }
+        })->with(['profile','profile.profileImage','profile.profession', 'profile.resumeFile', 'profile.resources'])->get();
+
+        return response()->json($profiles);
+    }
+
     public function single()
     {
         $userId = auth()->user()->id;
