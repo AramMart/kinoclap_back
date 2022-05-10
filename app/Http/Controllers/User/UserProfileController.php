@@ -22,12 +22,12 @@ class UserProfileController extends Controller
     public function single()
     {
         $userId = auth()->user()->id;
-        $user = User::with(['profile','profile.profileImage', 'profile.resumeFile', 'profile.resources'])->find($userId);
+        $user = User::with(['profile','profile.profileImage','profile.profession', 'profile.resumeFile', 'profile.resources'])->find($userId);
         return response()->json($user);
     }
 
     public function singleById($userId) {
-        $user = User::with(['profile','profile.profileImage', 'profile.resumeFile', 'profile.resources'])->find($userId);
+        $user = User::with(['profile','profile.profileImage','profile.profession', 'profile.resumeFile', 'profile.resources'])->find($userId);
         return response()->json($user);
     }
 
@@ -35,8 +35,9 @@ class UserProfileController extends Controller
     {
        try {
            $validator = Validator::make(request()->all(), [
-               'description' => 'string|min:3',
-               'phone_number' => 'string|min:8|max:12',
+               'description' => 'required|string|min:3',
+               'phone_number' => 'required|string|min:8|max:12',
+               'profession_id' => 'required|numeric',
                'profile_image' => 'nullable|numeric',
                'resume_file' => 'nullable|numeric',
                'resources' => 'nullable|array',

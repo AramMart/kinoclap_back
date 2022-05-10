@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\JWTController;
+use App\Http\Controllers\User\ProfessionController;
 use App\Http\Controllers\User\UserProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\NewsController;
@@ -46,7 +47,7 @@ Route::group([], function($router) {
             Route::get('/', [AdvertisementController::class, 'index']);
             Route::get('/{id}',[AdvertisementController::class, 'single']);
         });
-
+        // Categories
         Route::group(['prefix' => 'category'], function() {
             Route::get('/',[CategoryController::class, 'indexAdmin']);
             Route::get('/{id}',[CategoryController::class, 'single']);
@@ -57,6 +58,14 @@ Route::group([], function($router) {
             Route::post('/{id}/sub-categories/create',[SubCategoryController::class, 'create']);
             Route::delete('/sub-categories/{id}',[SubCategoryController::class, 'delete']);
         });
+
+        // Professions
+        Route::group(['prefix' => 'professions'], function() {
+            Route::get('/',[ProfessionController::class, 'indexAdmin']);
+            Route::post('/create',[ProfessionController::class, 'create']);
+            Route::delete('/{id}',[ProfessionController::class, 'delete']);
+        });
+
     });
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// ///////////////////////////////////////////////////////////////////////////////////////////
@@ -75,6 +84,13 @@ Route::group([], function($router) {
         Route::post('/',[CategoryController::class, 'index']);
         // Sub Categories
         Route::get('/sub-categories/{id}',[SubCategoryController::class, 'single']);
+    });
+
+    // Professions
+    Route::group(['prefix' => 'professions'], function() {
+        Route::get('/',[ProfessionController::class, 'index']);
+        Route::post('/create',[ProfessionController::class, 'create']);
+        Route::delete('/{id}',[ProfessionController::class, 'delete']);
     });
 
     Route::group(['prefix' => 'news'], function() {

@@ -16,12 +16,19 @@ class UserProfile extends Model
         'description',
         'phone_number',
         'profile_image',
-        'resume_file'
+        'resource_id',
+        'resume_file',
+        'profession_id'
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function profession(): BelongsTo
+    {
+        return $this->belongsTo(Profession::class);
     }
 
     public function profileImage(): BelongsTo

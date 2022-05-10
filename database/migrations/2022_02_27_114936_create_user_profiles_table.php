@@ -28,6 +28,11 @@ class CreateUserProfilesTable extends Migration
                 ->references('id')
                 ->on('resources')->onDelete('cascade');
 
+            $table->unsignedBigInteger('profession_id')->nullable();
+            $table->foreign('profession_id')
+                ->references('id')
+                ->on('professions')->onDelete('cascade');
+
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
