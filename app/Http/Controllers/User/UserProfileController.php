@@ -22,7 +22,6 @@ class UserProfileController extends Controller
     public function index()
     {
         $professionId = request()->get('profession_id');
-        $search = request()->get('search');
         $profiles = new User();
 
         if ($professionId) {
@@ -32,6 +31,16 @@ class UserProfileController extends Controller
                 }
             });
         }
+
+        $profiles = $profiles->with(['profile', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']);
+
+        return response()->json($profiles->get());
+    }
+
+
+    public function searchProfile() {
+        $profiles = new User();
+        $search = request()->search;
 
         if ($search) {
             $chunks = explode(" ", $search);
@@ -45,11 +54,12 @@ class UserProfileController extends Controller
                 $profiles = $profiles->where('first_name', 'LIKE', "%{$chunks[0]}%")
                     ->orWhere('last_name', 'LIKE', "%{$chunks[0]}%");
             }
+
+            $profiles = $profiles->where('id','!=', 1);
+            return response()->json($profiles->get());
+        } else {
+            return response()->json([]);
         }
-
-        $profiles = $profiles->with(['profile', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']);
-
-        return response()->json($profiles->get());
     }
 
     public function single()
