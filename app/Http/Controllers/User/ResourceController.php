@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Resource;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ResourceController extends Controller
@@ -24,7 +25,8 @@ class ResourceController extends Controller
         }
 
         if (request()->hasFile('file') && request()->get('type')) {
-            $path = request()->file('file')->store('');
+            $path = Storage::disk('gcs')->put('avatars/1', request()->file('file'));
+
             $resource = Resource::create([
                 'path' => $path,
                 'type' => request()->get('type')
