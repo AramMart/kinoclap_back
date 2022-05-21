@@ -38,24 +38,27 @@ class UserProfileController extends Controller
     }
 
 
-    public function searchProfile() {
-        $profiles = new User();
+    public function searchProfile()
+    {
+        $profiles = User::where('id', '<>', 1);
         $search = request()->search;
 
         if ($search) {
             $chunks = explode(" ", $search);
-            if (count($chunks) > 1) {
-                $profiles = $profiles->where(
-                    [['first_name', 'LIKE', "%{$chunks[0]}%"], ['last_name', 'LIKE', "%{$chunks[1]}%"]]
-                )->orWhere(
-                    [['first_name', 'LIKE', "%{$chunks[1]}%"], ['last_name', 'LIKE', "%{$chunks[0]}%"]]
-                );
-            } else {
-                $profiles = $profiles->where('first_name', 'LIKE', "%{$chunks[0]}%")
-                    ->orWhere('last_name', 'LIKE', "%{$chunks[0]}%");
-            }
 
-            $profiles = $profiles->where('id','!=', 1);
+            $profiles = $profiles->where(function ($query) use ($chunks) {
+                if (count($chunks) > 1) {
+                    $query->where(
+                        [['first_name', 'LIKE', "%{$chunks[0]}%"], ['last_name', 'LIKE', "%{$chunks[1]}%"]]
+                    )->orWhere(
+                        [['first_name', 'LIKE', "%{$chunks[1]}%"], ['last_name', 'LIKE', "%{$chunks[0]}%"]]
+                    );
+                } else {
+                    $query->where('first_name', 'LIKE', "%{$chunks[0]}%")
+                        ->orWhere('last_name', 'LIKE', "%{$chunks[0]}%");
+                }
+            });
+
             return response()->json($profiles->get());
         } else {
             return response()->json([]);
@@ -79,6 +82,9 @@ class UserProfileController extends Controller
     {
         try {
             $validator = Validator::make(request()->all(), [
+                'first_name' => 'required|string|min:3',
+                'last_name' => 'required|string|min:3',
+                'middle_name' => 'nullable|string|min:3',
                 'description' => 'required|string|min:3',
                 'phone_number' => 'required|string|min:8|max:12',
                 'profession_id' => 'required|numeric',
@@ -93,8 +99,16 @@ class UserProfileController extends Controller
             }
 
             $user = auth()->user();
-            $profile = UserProfile::where('user_id', $user->id)->first();
-            $data = array_merge($validator->validate(), ['user_id' => $user->id]);
+
+            $data = $validator->validate();
+
+            $user->first_name = $data['first_name'];
+            $user->last_name = $data['last_name'];
+            $user->middle_name = $data['middle_name'];
+            $user->save();
+
+            $profile = $user->profile;
+            $data = array_merge($data, ['user_id' => $user->id]);
 
             if ($profile && $profile->id) {
                 $profile->update($data);
