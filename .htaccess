@@ -1,0 +1,12 @@
+RewriteEngine on
+
+
+#added by Hayhost redirect to HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+#added by Hayhost for ssl validation
+
+RewriteCond %{REQUEST_URI} !\.well-known/acme-challenge 
+RewriteCond %{REQUEST_URI} !^public
+RewriteRule ^(.*)$ public/$1 [L]
