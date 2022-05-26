@@ -1,9 +1,9 @@
-Hello {{ $first_name.' '.$last_name.' '.($middle_name || '') }} <br><br>
+Բարի գալուստ {{ $first_name.' '.$last_name.' '.($middle_name || '') }} <br><br>
 
-Welcome to {{$welcome_to}}.<br><br>
+Դուք հաջողությամբ գրանցվեցիք {{$welcome_to}} հարթակում<br><br>
 
-To verify your site please visit to
-<a href="{{ $url }}">Verify Email</a>
-
-Thank You,<br>
-{{$welcome_to}}
+Հաստատելու համար ձեր էլեկտրոնային հասցեն անցեք հետեվլյալ հղումով
+<br>
+<a href="{{ $url }}">Հաստատել Էլ. հասցեն</a>
+<br><br>
+Շնորհակալություն, Սիրով {{$welcome_to}}

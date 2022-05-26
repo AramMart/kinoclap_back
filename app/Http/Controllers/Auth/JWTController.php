@@ -14,7 +14,7 @@ class JWTController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.custom_auth', ['except' => ['login', 'register', 'verifyAccount', 'forgotPassword', 'resetPassword']]);
+        $this->middleware('jwt.custom_auth', ['except' => ['login', 'register', 'verifyAccount', 'forgotPassword', 'resetPassword', 'test']]);
     }
 
     /**
