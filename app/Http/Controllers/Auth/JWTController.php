@@ -58,7 +58,7 @@ class JWTController extends Controller
             ],
             function ($message) use ($user) {
                 $message->to($user->email, $user->first_name)
-                    ->subject('Verify Email');
+                    ->subject('MAIL_REGISTRATION_SUBJECT');
             }
        );
 
