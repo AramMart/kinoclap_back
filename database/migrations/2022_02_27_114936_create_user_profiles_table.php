@@ -20,6 +20,7 @@ class CreateUserProfilesTable extends Migration
             $table->text('phone_number')->nullable();
             $table->integer('phone_code')->nullable();
             $table->integer('age')->nullable();
+            $table->boolean('is_casting')->default(false);
             $table->enum('gender', ['MALE', 'FEMALE']);
             $table->unsignedBigInteger('country_id')->nullable();
             $table->foreign('country_id')

@@ -17,6 +17,7 @@ class UserProfile extends Model
         'phone_number',
         'phone_code',
         'profile_image',
+        'is_casting',
         'resource_id',
         'resume_file',
         'profession_id',
