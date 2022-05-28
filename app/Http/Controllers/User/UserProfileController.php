@@ -37,6 +37,14 @@ class UserProfileController extends Controller
         return response()->json($profiles->get());
     }
 
+    public function castings() {
+
+        $profiles = User::whereHas('profile', function ($q)  {
+            $q->where('is_casting', true);
+        })->with(['profile', 'profile.country','profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']);
+
+        return response()->json($profiles->get());
+    }
 
     public function searchProfile()
     {

@@ -77,6 +77,7 @@ Route::group([], function($router) {
 
     Route::group(['prefix' => 'profile'], function() {
         Route::post('/filter',[UserProfileController::class, 'index']);
+        Route::post('/castings/filter',[UserProfileController::class, 'castings']);
         Route::get('/search',[UserProfileController::class, 'searchProfile']);
         Route::get('/',[UserProfileController::class, 'single']);
         Route::get('/{userId}',[UserProfileController::class, 'singleById']);
