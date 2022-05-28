@@ -32,7 +32,7 @@ class UserProfileController extends Controller
             });
         }
 
-        $profiles = $profiles->with(['profile', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']);
+        $profiles = $profiles->with(['profile', 'profile.country','profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']);
 
         return response()->json($profiles->get());
     }
@@ -68,13 +68,13 @@ class UserProfileController extends Controller
     public function single()
     {
         $userId = auth()->user()->id;
-        $user = User::with(['profile', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources'])->find($userId);
+        $user = User::with(['profile', 'profile.country', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources'])->find($userId);
         return response()->json($user);
     }
 
     public function singleById($userId)
     {
-        $user = User::with(['profile', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources'])->find($userId);
+        $user = User::with(['profile', 'profile.country', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources'])->find($userId);
         return response()->json($user);
     }
 
@@ -87,9 +87,13 @@ class UserProfileController extends Controller
                 'middle_name' => 'nullable|string|min:3',
                 'description' => 'required|string|min:3',
                 'phone_number' => 'required|string|min:8|max:12',
+                'phone_code' => 'required|numeric',
                 'profession_id' => 'required|numeric',
                 'profile_image' => 'nullable|numeric',
                 'resume_file' => 'nullable|numeric',
+                'country_id' => 'required|numeric',
+                'gender' => 'required|in:MALE,FEMALE',
+                'age' => 'required|numeric',
                 'resources' => 'nullable|array',
                 'resources.*' => 'numeric',
             ]);

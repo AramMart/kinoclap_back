@@ -15,15 +15,23 @@ class UserProfile extends Model
         'user_id',
         'description',
         'phone_number',
+        'phone_code',
         'profile_image',
         'resource_id',
         'resume_file',
-        'profession_id'
+        'profession_id',
+        'country_id',
+        'gender',
+        'age'
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function country(): BelongsTo {
+        return $this->belongsTo(Country::class);
     }
 
     public function profession(): BelongsTo

@@ -18,6 +18,15 @@ class CreateUserProfilesTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->text('description')->nullable();
             $table->text('phone_number')->nullable();
+            $table->integer('phone_code')->nullable();
+            $table->integer('age')->nullable();
+            $table->enum('gender', ['MALE', 'FEMALE']);
+            $table->unsignedBigInteger('country_id')->nullable();
+            $table->foreign('country_id')
+                ->references('id')
+                ->on('countries')->onDelete('cascade');
+
+
             $table->unsignedBigInteger('profile_image')->nullable();
             $table->foreign('profile_image')
                 ->references('id')

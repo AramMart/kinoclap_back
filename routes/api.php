@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\JWTController;
+use App\Http\Controllers\User\CountryController;
 use App\Http\Controllers\User\ProfessionController;
 use App\Http\Controllers\User\UserProfileController;
 use Illuminate\Support\Facades\Route;
@@ -81,6 +82,8 @@ Route::group([], function($router) {
         Route::get('/{userId}',[UserProfileController::class, 'singleById']);
         Route::put('/',[UserProfileController::class, 'update']);
     });
+
+    Route::get('countries', [CountryController::class, 'index']);
 
     Route::group(['prefix' => 'category'], function() {
         Route::post('/',[CategoryController::class, 'index']);
