@@ -197,7 +197,7 @@ class JWTController extends Controller
             'accessToken' => $token,
             'refreshToken' => $token,
             'expiresIn' => auth()->factory()->getTTL() * 60,
-            'user' =>  ['general' => auth()->user(), 'profile' => auth()->user()->profile()]
+            'user' =>  ['general' => auth()->user(), 'profile' => auth()->user()->profile]
         ]);
     }
 }
