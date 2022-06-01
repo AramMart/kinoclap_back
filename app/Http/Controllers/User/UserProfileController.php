@@ -40,7 +40,24 @@ class UserProfileController extends Controller
     public function castings() {
 
         $profiles = User::whereHas('profile', function ($q)  {
+
+            $countryId = request()->get('country_id');
+            $age = request()->get('age');
+            $gender = request()->get('gender');
+
             $q->where('is_casting', true);
+
+            if ($countryId) {
+                $q->where('country_id', $countryId);
+            }
+
+            if ($gender) {
+                $q->where('gender', $gender);
+            }
+
+            if ($age) {
+                $q->whereIn('age', $age);
+            }
         })->with(['profile', 'profile.country','profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']);
 
         return response()->json($profiles->get());
