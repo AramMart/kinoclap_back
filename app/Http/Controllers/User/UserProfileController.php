@@ -56,7 +56,7 @@ class UserProfileController extends Controller
             }
 
             if ($age) {
-                $q->whereIn('age', $age);
+                $q->where('age', '<=', $age);
             }
         })->with(['profile', 'profile.country','profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']);
 
