@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -197,7 +198,7 @@ class JWTController extends Controller
             'accessToken' => $token,
             'refreshToken' => $token,
             'expiresIn' => auth()->factory()->getTTL() * 60,
-            'user' =>  ['general' => auth()->user(), 'profile' => auth()->user()->profile]
+            'user' =>  ['general' => auth()->user(), 'profile' => UserProfile::where('user_id',auth()->user()->id)->with(['profileImage'])->first()]
         ]);
     }
 }
