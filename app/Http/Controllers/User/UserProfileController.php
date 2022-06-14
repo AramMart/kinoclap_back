@@ -29,6 +29,21 @@ class UserProfileController extends Controller
                 if ($professionId) {
                     $q->where('profession_id', $professionId);
                 }
+
+                $countryId = request()->get('country_id');
+                $age = request()->get('age');
+                $gender = request()->get('gender');
+                if ($countryId) {
+                    $q->where('country_id', $countryId);
+                }
+
+                if ($gender) {
+                    $q->where('gender', $gender);
+                }
+
+                if ($age) {
+                    $q->where('age', '<=', $age);
+                }
             });
         }
 
