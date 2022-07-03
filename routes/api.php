@@ -81,7 +81,9 @@ Route::group([], function($router) {
         Route::get('/search',[UserProfileController::class, 'searchProfile']);
         Route::get('/',[UserProfileController::class, 'single']);
         Route::get('/{userId}',[UserProfileController::class, 'singleById']);
-        Route::put('/',[UserProfileController::class, 'update']);
+        Route::put('/settings',[UserProfileController::class, 'updateSettings']);
+        Route::put('/works',[UserProfileController::class, 'updateWorks']);
+        Route::put('/image',[UserProfileController::class, 'updateProfileImage']);
     });
 
     Route::get('countries', [CountryController::class, 'index']);

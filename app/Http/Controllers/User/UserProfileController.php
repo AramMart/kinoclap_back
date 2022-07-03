@@ -118,7 +118,7 @@ class UserProfileController extends Controller
         return response()->json($user);
     }
 
-    public function update()
+    public function updateSettings()
     {
         try {
             $validator = Validator::make(request()->all(), [
@@ -130,13 +130,10 @@ class UserProfileController extends Controller
                 'phone_code' => 'required|numeric',
                 'profession_id' => 'nullable|numeric',
                 'is_casting' => 'boolean',
-                'profile_image' => 'nullable|numeric',
                 'resume_file' => 'nullable|numeric',
                 'country_id' => 'required|numeric',
                 'gender' => 'required|in:MALE,FEMALE',
-                'age' => 'required|numeric',
-                'resources' => 'nullable|array',
-                'resources.*' => 'numeric',
+                'age' => 'required|numeric'
             ]);
 
             if ($validator->fails()) {
@@ -161,16 +158,68 @@ class UserProfileController extends Controller
                 $profile = UserProfile::create($data);
             }
 
-            $resources = Resource::find(request()->get('resources'));
-
-            $profile->resources()->detach();
-            $profile->resources()->attach($resources);
-
             return response()->json(['message' => 'Profile updated.']);
 
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
     }
+
+
+    public function updateProfileImage() {
+            $validator = Validator::make(request()->all(), [
+                'profile_image' => 'nullable|numeric'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['message' => $validator->errors()->first()], 400);
+            }
+
+            $user = auth()->user();
+
+            $data = $validator->validate();
+
+            $profile = $user->profile;
+            $data = array_merge($data, ['user_id' => $user->id]);
+
+            if ($profile && $profile->id) {
+                $profile->update($data);
+            } else {
+                $profile = UserProfile::create($data);
+            }
+
+            return response()->json(['message' => 'Profile updated.']);
+
+    }
+
+    public function updateWorks()
+        {
+            try {
+                $validator = Validator::make(request()->all(), [
+                    'resources' => 'nullable|array',
+                    'resources.*' => 'numeric',
+                ]);
+
+                if ($validator->fails()) {
+                    return response()->json(['message' => $validator->errors()->first()], 400);
+                }
+
+                $user = auth()->user();
+
+                $data = $validator->validate();
+
+                $profile = $user->profile;
+
+                $resources = Resource::find(request()->get('resources'));
+
+                $profile->resources()->detach();
+                $profile->resources()->attach($resources);
+
+                return response()->json(['message' => 'Profile updated.']);
+
+            } catch (\Exception $e) {
+                return response()->json(['message' => $e->getMessage()], 400);
+            }
+        }
 
 }
