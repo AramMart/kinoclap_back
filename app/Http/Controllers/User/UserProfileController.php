@@ -80,7 +80,7 @@ class UserProfileController extends Controller
 
     public function searchProfile()
     {
-        $profiles = User::where('id', '<>', 1);
+        $profiles = User::where('id', '<>', 1)->with(['profile', 'profile.profileImage']);
         $search = request()->search;
 
         if ($search) {
