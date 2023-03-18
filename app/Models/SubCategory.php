@@ -12,7 +12,7 @@ class SubCategory extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'category_id'
+        'title_am','title_ru','title_en', 'category_id'
     ];
 
     public function category(): BelongsTo

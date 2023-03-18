@@ -11,7 +11,7 @@ class Profession extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name'
+        'name_am', 'name_ru', 'name_en'
     ];
 
     public function userProfiles(): HasMany
