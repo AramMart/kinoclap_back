@@ -46,8 +46,12 @@ class NewsController extends Controller
     public function create()
     {
         $validator = Validator::make(request()->all(), [
-            'title' => 'required|string|min:3|max:255',
-            'description' => 'required|string|min:3',
+            'title_am' => 'required|string|min:3|max:255',
+            'title_ru' => 'required|string|min:3|max:255',
+            'title_en' => 'required|string|min:3|max:255',
+            'description_am' => 'required|string|min:3',
+            'description_ru' => 'required|string|min:3',
+            'description_en' => 'required|string|min:3',
             'type' => 'required|in:user,guest,all',
             'resources' => 'required|array',
             'resources.*' => 'numeric',

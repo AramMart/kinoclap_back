@@ -38,7 +38,9 @@ class ProfessionController extends Controller
     public function create()
     {
         $validator = Validator::make(request()->all(), [
-            'name' => 'required',
+            'name_am' => 'required',
+            'name_ru' => 'required',
+            'name_en' => 'required'
         ]);
 
         if($validator->fails()){

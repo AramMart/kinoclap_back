@@ -31,14 +31,18 @@ class SubCategoryController extends Controller
     {
        try {
            $validator = Validator::make(request()->all(), [
-               'title' => 'required|string|min:3|max:255|unique:sub_categories'
+               'title_am' => 'required|string|min:3|max:255|unique:sub_categories',
+               'title_ru' => 'required|string|min:3|max:255|unique:sub_categories',
+               'title_en' => 'required|string|min:3|max:255|unique:sub_categories'
            ]);
 
            if($validator->fails()){
                return response()->json(['message'=> $validator->errors()->first()],400);
            }
            $data = [
-               'title' => request()->get('title'),
+               'title_am' => request()->get('title_am'),
+               'title_ru' => request()->get('title_ru'),
+               'title_en' => request()->get('title_en'),
                'category_id' => $id
            ];
 
