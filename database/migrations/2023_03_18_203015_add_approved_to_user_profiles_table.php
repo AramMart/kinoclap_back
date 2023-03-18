@@ -14,7 +14,7 @@ class AddApprovedToUserProfilesTable extends Migration
     public function up()
     {
         Schema::table('user_profiles', function (Blueprint $table) {
-            $table->enum('approved', ['PENDING', 'ACCEPTED', 'REJECTED'])->after('active');
+            $table->enum('approved', ['PENDING', 'ACCEPTED', 'REJECTED'])->after('user_id');
         });
     }
 
