@@ -10,7 +10,7 @@ class Advertisement extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'description', 'type', 'sub_category_id', 'active', 'user_id'
+        'title', 'description', 'type', 'sub_category_id', 'active', 'user_id', 'approved'
     ];
 
     public function resources()

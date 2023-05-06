@@ -17,7 +17,10 @@ class UserController extends Controller
 
     public function indexAdminNotApproved()
     {
-        $users = User::where('type', 'user')->where('approved', 'PENDING')->paginate(10);
+        $users = User::where('type', 'user')->whereHas('profile', function ($q) {
+            $q->where('approved', 'PENDING');
+        })->paginate(10);
+
         return response()->json($users);
     }
 
@@ -28,6 +31,21 @@ class UserController extends Controller
         )->find($id);
 
         return response()->json($user);
+    }
+
+    public function updateModerationStatus($id)
+    {
+        if (!in_array(request()->input('status'), ['ACCEPT', 'REJECT', 'PENDING'])) {
+            return response()->json([], 400);
+        }
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([], 404);
+        }
+        $user->profile->update(['approved' => request()->input('status')]);
+
+        return response()->json();
     }
 
     public function index()

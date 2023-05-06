@@ -17,7 +17,7 @@ class UserProfileController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.custom_auth');
+        $this->middleware('jwt.custom_auth', ['except' => ['single', 'index']]);
     }
 
     public function index()
@@ -26,6 +26,10 @@ class UserProfileController extends Controller
         $profiles = User::where('type', 'user')->whereHas('profile', function ($q) {
             $q->where('approved', 'ACCEPTED');
         });
+
+        if (!auth()->user()) {
+//            $profiles->withHidden(['phone_number']);
+        }
 
         if ($professionId) {
             $profiles = $profiles->whereHas('profile', function ($q) use ($professionId) {
@@ -52,7 +56,7 @@ class UserProfileController extends Controller
 
         $profiles = $profiles->with(['profile', 'profile.country','profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']);
 
-        return response()->json($profiles->get());
+        return response()->json($profiles->paginate(10));
     }
 
     public function castings() {
@@ -111,13 +115,22 @@ class UserProfileController extends Controller
     public function single()
     {
         $userId = auth()->user()->id;
-        $user = User::with(['profile', 'profile.country', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources'])->find($userId);
+        $user = User::with(
+            ['profile', 'profile.country', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']
+        )->find($userId);
         return response()->json($user);
     }
 
     public function singleById($userId)
     {
-        $user = User::with(['profile', 'profile.country', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources'])->find($userId);
+        $user = User::with(
+            ['profile', 'profile.country', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']
+        )->find($userId);
+
+//        if (!auth()->user()) {
+//            $user->makeHidden(['phone_number']);
+//        }
+
         return response()->json($user);
     }
 
@@ -153,7 +166,7 @@ class UserProfileController extends Controller
             $user->save();
 
             $profile = $user->profile;
-            $data = array_merge($data, ['user_id' => $user->id,'approved' => 'PENDING']);
+            $data = array_merge($data, ['user_id' => $user->id,'approved' => 0]);
 
             if ($profile && $profile->id) {
                 $profile->update($data);
@@ -183,7 +196,7 @@ class UserProfileController extends Controller
             $data = $validator->validate();
 
             $profile = $user->profile;
-            $data = array_merge($data, ['user_id' => $user->id, 'approved' => 'PENDING']);
+            $data = array_merge($data, ['user_id' => $user->id, 'approved' => 0]);
 
             if ($profile && $profile->id) {
                 $profile->update($data);
@@ -212,7 +225,7 @@ class UserProfileController extends Controller
                 $data = $validator->validate();
 
                 $profile = $user->profile;
-                $data = array_merge($data, ['user_id' => $user->id, 'approved' => 'PENDING']);
+                $data = array_merge($data, ['user_id' => $user->id, 'approved' => 0]);
 
                 if ($profile && $profile->id) {
                     $profile->update($data);

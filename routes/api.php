@@ -39,16 +39,18 @@ Route::group([], function($router) {
         });
 
         Route::group(['prefix' => 'user'], function() {
-            Route::get('/',[UserController::class, 'index']);
-            Route::get('/{id}',[UserController::class, 'single']);
             Route::get('/not-approved',[UserController::class, 'indexAdminNotApproved']);
             Route::get('/not-approved/{id}',[UserController::class, 'singleAdminNotApproved']);
+            Route::get('/change-status/{id}',[UserController::class, 'updateModerationStatus']);
+            Route::get('/',[UserController::class, 'index']);
+            Route::get('/{id}',[UserController::class, 'single']);
         });
 
         // Advertisements
         Route::group(['prefix' => 'advertisement'], function() {
-            Route::get('/', [AdvertisementController::class, 'indexAdmin']);
-            Route::get('/{id}',[AdvertisementController::class, 'singleAdmin']);
+            Route::get('/not-approved', [AdvertisementController::class, 'indexAdmin']);
+            Route::get('/not-approved/{id}',[AdvertisementController::class, 'singleAdmin']);
+            Route::patch('/change-status/{id}',[AdvertisementController::class, 'updateModerationStatus']);
         });
         // Categories
         Route::group(['prefix' => 'category'], function() {

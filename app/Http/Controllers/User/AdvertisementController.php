@@ -30,6 +30,21 @@ class AdvertisementController extends Controller
         return response()->json($advertisement);
     }
 
+    public function updateModerationStatus($id)
+    {
+        if (!in_array(request()->input('status'), ['ACCEPT', 'REJECT'])) {
+            return response()->json([], 400);
+        }
+        $advertisement = Advertisement::find($id);
+
+        if (!$advertisement) {
+            return response()->json([], 404);
+        }
+        $advertisement->approved = request()->input('status') === 'ACCEPT' ? 2 : 3;
+        $advertisement->save();
+        return response()->json([]);
+    }
+
     public function index()
     {
         try {

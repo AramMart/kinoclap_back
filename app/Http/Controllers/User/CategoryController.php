@@ -54,7 +54,7 @@ class CategoryController extends Controller
             return response()->json(['message'=> $validator->errors()->first()],400);
         }
 
-        if($news = Category::create($validator->validate())){
+        if($news = Category::create($validator->validate())) {
             return response()->json(['message' => 'Category Created','data'=> $news],200);
         }
         return response()->json(['message'=> 'Category not created.'],400);
