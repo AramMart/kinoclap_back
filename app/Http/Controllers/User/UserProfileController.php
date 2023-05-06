@@ -25,11 +25,13 @@ class UserProfileController extends Controller
     {
         $professionId = request()->get('profession_id');
         $profiles = User::where('type', 'user')->whereHas('profile', function ($q) {
-            $q->where('approved', 'ACCEPTED');
+            $q->where('is_casting', false)->where('approved', 'ACCEPTED');
         });
 
         if (!auth()->user()) {
 //            $profiles->withHidden(['phone_number']);
+        } else {
+            $profiles->where('id', '<>', auth()->user()->id);
         }
 
         if ($professionId) {
@@ -57,7 +59,7 @@ class UserProfileController extends Controller
 
         $profiles = $profiles->with(['profile', 'profile.country','profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']);
 
-        return response()->json($profiles->paginate(10));
+        return response()->json($profiles->paginate(100));
     }
 
     public function castings() {
@@ -68,7 +70,7 @@ class UserProfileController extends Controller
             $age = request()->get('age');
             $gender = request()->get('gender');
 
-            $q->where('is_casting', true);
+            $q->where('is_casting', true)->where('approved', 'ACCEPTED');
 
             if ($countryId) {
                 $q->where('country_id', $countryId);
@@ -83,7 +85,11 @@ class UserProfileController extends Controller
             }
         })->with(['profile', 'profile.country','profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']);
 
-        return response()->json($profiles->get());
+        if (auth()->user()) {
+            $profiles->where('id', '<>', auth()->user()->id);
+        }
+
+        return response()->json($profiles->paginate(100));
     }
 
     public function searchProfile()
