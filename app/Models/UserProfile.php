@@ -23,7 +23,8 @@ class UserProfile extends Model
         'profession_id',
         'country_id',
         'gender',
-        'age'
+        'age',
+        'approved'
     ];
 
     public function user(): BelongsTo

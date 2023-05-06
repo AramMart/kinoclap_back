@@ -14,12 +14,27 @@ class UserController extends Controller
         $this->middleware('jwt.custom_auth');
     }
 
+
+    public function indexAdminNotApproved()
+    {
+        $users = User::where('type', 'user')->where('approved', 'PENDING')->paginate(10);
+        return response()->json($users);
+    }
+
+    public function singleAdminNotApproved($id)
+    {
+        $user = User::with(
+            ['profile', 'profile.country','profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']
+        )->find($id);
+
+        return response()->json($user);
+    }
+
     public function index()
     {
         $users = User::where('type', 'user')->paginate(10);
         return response()->json($users);
     }
-
 
     public function single($id)
     {

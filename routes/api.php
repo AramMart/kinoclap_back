@@ -41,12 +41,14 @@ Route::group([], function($router) {
         Route::group(['prefix' => 'user'], function() {
             Route::get('/',[UserController::class, 'index']);
             Route::get('/{id}',[UserController::class, 'single']);
+            Route::get('/not-approved',[UserController::class, 'indexAdminNotApproved']);
+            Route::get('/not-approved/{id}',[UserController::class, 'singleAdminNotApproved']);
         });
 
         // Advertisements
         Route::group(['prefix' => 'advertisement'], function() {
-            Route::get('/', [AdvertisementController::class, 'index']);
-            Route::get('/{id}',[AdvertisementController::class, 'single']);
+            Route::get('/', [AdvertisementController::class, 'indexAdmin']);
+            Route::get('/{id}',[AdvertisementController::class, 'singleAdmin']);
         });
         // Categories
         Route::group(['prefix' => 'category'], function() {

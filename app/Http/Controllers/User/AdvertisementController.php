@@ -20,13 +20,25 @@ class AdvertisementController extends Controller
         $this->middleware('jwt.custom_auth', ['except' => ['single', 'index']]);
     }
 
+    public function indexAdmin() {
+        $advertisements = Advertisement::where('approved', 'PENDING')->paginate(10);
+        return response()->json($advertisements);
+    }
+
+    public function singleAdmin($id) {
+        $advertisement = Advertisement::with('resources', 'sub_category')->find($id);
+        return response()->json($advertisement);
+    }
+
     public function index()
     {
         try {
             $types = request()->get('types');
             $subCategoryId = request()->get('subCategoryId');
 
-            $advertisements = Advertisement::with('resources')->where('active', true);
+            $advertisements = Advertisement::with('resources')
+                ->where('active', true)
+                ->where('approved', 'ACCEPTED');
 
             if ($subCategoryId) {
                $advertisements->whereHas('sub_category',function ($q) use ($subCategoryId) {
@@ -73,7 +85,6 @@ class AdvertisementController extends Controller
             })->with(['profile','profile.profileImage'])->first();
         return response()->json($userProfile);
     }
-
 
     public function create()
     {

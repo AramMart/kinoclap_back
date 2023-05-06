@@ -8,6 +8,7 @@ use App\Models\News;
 use App\Models\Resource;
 use App\Models\User;
 use App\Models\UserProfile;
+use Google\Service\Analytics\Profile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -22,7 +23,9 @@ class UserProfileController extends Controller
     public function index()
     {
         $professionId = request()->get('profession_id');
-        $profiles = new User();
+        $profiles = User::where('type', 'user')->whereHas('profile', function ($q) {
+            $q->where('approved', 'ACCEPTED');
+        });
 
         if ($professionId) {
             $profiles = $profiles->whereHas('profile', function ($q) use ($professionId) {
@@ -150,7 +153,7 @@ class UserProfileController extends Controller
             $user->save();
 
             $profile = $user->profile;
-            $data = array_merge($data, ['user_id' => $user->id]);
+            $data = array_merge($data, ['user_id' => $user->id,'approved' => 'PENDING']);
 
             if ($profile && $profile->id) {
                 $profile->update($data);
@@ -180,7 +183,7 @@ class UserProfileController extends Controller
             $data = $validator->validate();
 
             $profile = $user->profile;
-            $data = array_merge($data, ['user_id' => $user->id]);
+            $data = array_merge($data, ['user_id' => $user->id, 'approved' => 'PENDING']);
 
             if ($profile && $profile->id) {
                 $profile->update($data);
@@ -209,6 +212,13 @@ class UserProfileController extends Controller
                 $data = $validator->validate();
 
                 $profile = $user->profile;
+                $data = array_merge($data, ['user_id' => $user->id, 'approved' => 'PENDING']);
+
+                if ($profile && $profile->id) {
+                    $profile->update($data);
+                } else {
+                    $profile = UserProfile::create($data);
+                }
 
                 $resources = Resource::find(request()->get('resources'));
 
