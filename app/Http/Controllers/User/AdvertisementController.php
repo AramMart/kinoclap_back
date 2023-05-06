@@ -56,6 +56,10 @@ class AdvertisementController extends Controller
                 ->where('active', true)
                 ->where('approved', 'ACCEPTED');
 
+            if (auth()->user()) {
+                $advertisements->where('user_id','<>', auth()->user()->id);
+            }
+
             if ($subCategoryId) {
                $advertisements->whereHas('sub_category',function ($q) use ($subCategoryId) {
                    $q->where('id', $subCategoryId);

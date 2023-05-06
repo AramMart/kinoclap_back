@@ -18,7 +18,7 @@ class UserProfileController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.custom_auth', ['except' => ['single', 'index']]);
+        $this->middleware('jwt.custom_auth', ['except' => [ 'index', 'singleById']]);
     }
 
     public function index()
@@ -29,6 +29,7 @@ class UserProfileController extends Controller
         });
 
         if (!auth()->user()) {
+            //TODO hide phone
 //            $profiles->withHidden(['phone_number']);
         } else {
             $profiles->where('id', '<>', auth()->user()->id);
@@ -133,7 +134,7 @@ class UserProfileController extends Controller
         $user = User::with(
             ['profile', 'profile.country', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']
         )->find($userId);
-
+        //TODO hide phone
 //        if (!auth()->user()) {
 //            $user->makeHidden(['phone_number']);
 //        }
