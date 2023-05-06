@@ -40,8 +40,7 @@ Route::group([], function($router) {
 
         Route::group(['prefix' => 'user'], function() {
             Route::get('/not-approved',[UserController::class, 'indexAdminNotApproved']);
-            Route::get('/not-approved/{id}',[UserController::class, 'singleAdminNotApproved']);
-            Route::get('/change-status/{id}',[UserController::class, 'updateModerationStatus']);
+            Route::patch('/change-status/{id}',[UserController::class, 'updateModerationStatus']);
             Route::get('/',[UserController::class, 'index']);
             Route::get('/{id}',[UserController::class, 'single']);
         });

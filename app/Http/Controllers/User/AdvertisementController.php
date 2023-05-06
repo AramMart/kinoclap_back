@@ -7,6 +7,7 @@ use App\Models\Advertisement;
 use App\Models\News;
 use App\Models\Resource;
 use App\Models\User;
+use App\Services\MailSender;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
@@ -125,6 +126,9 @@ class AdvertisementController extends Controller
         if ($advertisement->id) {
             return response()->json($advertisement);
         }
+
+        MailSender::sendNotificationForNewModeration('advertisement');
+
         return response()->json(['message' => 'Advertisement not created.'], 400);
     }
 

@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Services\MailSender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -49,19 +49,7 @@ class JWTController extends Controller
         ]);
 
         // send email with the template
-        Mail::send(
-            'auth.welcome_email',
-            ['first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'middle_name' => $user->middle_name,
-                'welcome_to' => env('MAIL_FROM_NAME'),
-                'url' => env('FRONT_URL').'/'.env('FRONT_ACCEPT_EMAIL').'/'.$email_verification_token
-            ],
-            function ($message) use ($user) {
-                $message->to($user->email, $user->first_name)
-                    ->subject(env('MAIL_REGISTRATION_SUBJECT'));
-            }
-       );
+        MailSender::sendRegistrationVerificationMail($user, $email_verification_token);
 
         return response()->json([
             'message' => 'User successfully registered',

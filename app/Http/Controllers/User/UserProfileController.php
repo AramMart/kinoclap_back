@@ -8,6 +8,7 @@ use App\Models\News;
 use App\Models\Resource;
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Services\MailSender;
 use Google\Service\Analytics\Profile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -171,8 +172,10 @@ class UserProfileController extends Controller
             if ($profile && $profile->id) {
                 $profile->update($data);
             } else {
-                $profile = UserProfile::create($data);
+                UserProfile::create($data);
             }
+
+            MailSender::sendNotificationForNewModeration('user');
 
             return response()->json(['message' => 'Profile updated.']);
 
@@ -201,11 +204,12 @@ class UserProfileController extends Controller
             if ($profile && $profile->id) {
                 $profile->update($data);
             } else {
-                $profile = UserProfile::create($data);
+                UserProfile::create($data);
             }
 
-            return response()->json(['message' => 'Profile updated.']);
+            MailSender::sendNotificationForNewModeration('user');
 
+            return response()->json(['message' => 'Profile updated.']);
     }
 
     public function updateWorks()
@@ -237,6 +241,8 @@ class UserProfileController extends Controller
 
                 $profile->resources()->detach();
                 $profile->resources()->attach($resources);
+
+                MailSender::sendNotificationForNewModeration('user');
 
                 return response()->json(['message' => 'Profile updated.']);
 

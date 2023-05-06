@@ -24,18 +24,9 @@ class UserController extends Controller
         return response()->json($users);
     }
 
-    public function singleAdminNotApproved($id)
-    {
-        $user = User::with(
-            ['profile', 'profile.country','profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']
-        )->find($id);
-
-        return response()->json($user);
-    }
-
     public function updateModerationStatus($id)
     {
-        if (!in_array(request()->input('status'), ['ACCEPT', 'REJECT', 'PENDING'])) {
+        if (!in_array(request()->input('status'), ['ACCEPT', 'REJECT'])) {
             return response()->json([], 400);
         }
         $user = User::find($id);
@@ -43,7 +34,9 @@ class UserController extends Controller
         if (!$user) {
             return response()->json([], 404);
         }
-        $user->profile->update(['approved' => request()->input('status')]);
+
+        $user->profile->approved = request()->input('status') === 'ACCEPT' ? 2 : 3;
+        $user->profile->save();
 
         return response()->json();
     }
@@ -56,7 +49,10 @@ class UserController extends Controller
 
     public function single($id)
     {
-        $user = User::find($id);
+        $user = User::with(
+            ['profile', 'profile.country','profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']
+        )->find($id);
+
         return response()->json($user);
     }
 
