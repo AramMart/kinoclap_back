@@ -174,7 +174,7 @@ class UserProfileController extends Controller
             $user->save();
 
             $profile = $user->profile;
-            $data = array_merge($data, ['user_id' => $user->id,'approved' => 0]);
+            $data = array_merge($data, ['user_id' => $user->id,'approved' => 'PENDING']);
 
             if ($profile && $profile->id) {
                 $profile->update($data);
@@ -206,7 +206,7 @@ class UserProfileController extends Controller
             $data = $validator->validate();
 
             $profile = $user->profile;
-            $data = array_merge($data, ['user_id' => $user->id, 'approved' => 0]);
+            $data = array_merge($data, ['user_id' => $user->id, 'approved' => 'PENDING']);
 
             if ($profile && $profile->id) {
                 $profile->update($data);
@@ -236,7 +236,7 @@ class UserProfileController extends Controller
                 $data = $validator->validate();
 
                 $profile = $user->profile;
-                $data = array_merge($data, ['user_id' => $user->id, 'approved' => 0]);
+                $data = array_merge($data, ['user_id' => $user->id, 'approved' => 'PENDING']);
 
                 if ($profile && $profile->id) {
                     $profile->update($data);
