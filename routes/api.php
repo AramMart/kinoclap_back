@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\JWTController;
+use App\Http\Controllers\User\ChatController;
 use App\Http\Controllers\User\CountryController;
 use App\Http\Controllers\User\ProfessionController;
 use App\Http\Controllers\User\UserProfileController;
@@ -106,6 +107,14 @@ Route::group([], function($router) {
     Route::group(['prefix' => 'news'], function() {
         Route::post('/',[NewsController::class, 'index']);
     });
+
+    Route::group(['prefix' => 'chat'], function() {
+        Route::post('/send',[ChatController::class, 'sendMessage']);
+        Route::get('/messages/{receiverId}',[ChatController::class, 'getMessages']);
+        Route::get('/unseen-badge',[ChatController::class, 'getUnseenBadge']);
+        Route::get('/conversations',[ChatController::class, 'getAllChatConversations']);
+    });
+
     // Advertisements
     Route::group(['prefix' => 'advertisement'], function() {
         Route::post('/filter',[AdvertisementController::class, 'index']);

@@ -14,7 +14,6 @@ class UserController extends Controller
         $this->middleware('jwt.custom_auth');
     }
 
-
     public function indexAdminNotApproved()
     {
         $users = User::where('type', 'user')->whereHas('profile', function ($q) {
