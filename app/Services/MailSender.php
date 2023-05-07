@@ -10,7 +10,7 @@ class MailSender
             'moderation.new_moderation',
             ['type' => $type],
             function ($message) {
-                $message->to(env('MAIL_USERNAME'), 'ADMIN')
+                $message->to(env('MAIL_MODERATOR'), 'ADMIN')
                     ->subject(env('MAIL_MODERATION_SUBJECT'));
             }
         );
