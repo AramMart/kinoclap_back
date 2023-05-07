@@ -4,14 +4,10 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Advertisement;
-use App\Models\News;
 use App\Models\Resource;
 use App\Models\User;
 use App\Services\MailSender;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AdvertisementController extends Controller
@@ -127,11 +123,11 @@ class AdvertisementController extends Controller
         $advertisement = Advertisement::create(array_merge($validator->validate(), ['user_id' => $user->id]));
         $advertisement->resources()->attach($resources);
 
+        MailSender::sendNotificationForNewModeration('advertisement');
+
         if ($advertisement->id) {
             return response()->json($advertisement);
         }
-
-        MailSender::sendNotificationForNewModeration('advertisement');
 
         return response()->json(['message' => 'Advertisement not created.'], 400);
     }
