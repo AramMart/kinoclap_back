@@ -40,7 +40,7 @@ class ChatController extends Controller
     public function getMessages($receiverId) {
         $senderId = auth()->user()->id;
 
-        $messages = Chat::where('sender_id', $senderId)->where('receiver_id', $receiverId)
+        $messages = Chat::where('sender_id', $senderId)->where('receiver_id', $receiverId)->orWhere('receiver_id', $senderId)->where('sender_id', $receiverId)
             ->orderBy('created_at', 'DESC')
             ->paginate(300);
 
