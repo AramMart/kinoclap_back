@@ -50,8 +50,7 @@ class ChatController extends Controller
     }
 
     public function getUnseenBadge() {
-        $senderId = auth()->user()->id;
-        $unseenMessage = Chat::where('sender_id', $senderId)->where('seen', false)->first();
+        $unseenMessage = Chat::where('receiver_id',  auth()->user()->id)->where('seen', false)->first();
         $badge = false;
 
         if ($unseenMessage) {

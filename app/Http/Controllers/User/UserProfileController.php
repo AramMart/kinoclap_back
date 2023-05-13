@@ -95,8 +95,15 @@ class UserProfileController extends Controller
 
     public function searchProfile()
     {
-        $profiles = User::where('id', '<>', 1)->with(['profile', 'profile.profileImage']);
+        $profiles = User::where('id', '<>', 1)->whereHas('profile', function ($q) {
+            $q->where('approved', 'ACCEPTED');
+        })->with(['profile', 'profile.profileImage']);
+
         $search = request()->search;
+
+        if (auth()->user()) {
+            $profiles->where('id', '<>', auth()->user()->id);
+        }
 
         if ($search) {
             $chunks = explode(" ", $search);
@@ -133,12 +140,18 @@ class UserProfileController extends Controller
     {
         $user = User::with(
             ['profile', 'profile.country', 'profile.profileImage', 'profile.profession', 'profile.resumeFile', 'profile.resources']
-        )->find($userId);
+        )->whereHas('profile', function ($q) {
+            $q->where('approved', 'ACCEPTED');
+        })->find($userId);
+
         //TODO hide phone
 //        if (!auth()->user()) {
 //            $user->makeHidden(['phone_number']);
 //        }
 
+        if (!$user) {
+            return response()->json([],404);
+        }
         return response()->json($user);
     }
 
