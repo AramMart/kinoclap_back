@@ -170,7 +170,9 @@ class UserProfileController extends Controller
                 'resume_file' => 'nullable|numeric',
                 'country_id' => 'required|numeric',
                 'gender' => 'required|in:MALE,FEMALE',
-                'age' => 'required|numeric'
+                'age' => 'required|numeric',
+                'facebook' => 'nullable|string',
+                'instagram' => 'nullable|string',
             ]);
 
             if ($validator->fails()) {

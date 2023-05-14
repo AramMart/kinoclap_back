@@ -24,7 +24,9 @@ class UserProfile extends Model
         'country_id',
         'gender',
         'age',
-        'approved'
+        'approved',
+        'facebook',
+        'instagram'
     ];
 
     public function user(): BelongsTo
