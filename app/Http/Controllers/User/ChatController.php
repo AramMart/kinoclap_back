@@ -44,7 +44,7 @@ class ChatController extends Controller
             ->orderBy('created_at', 'DESC')
             ->paginate(300);
 
-        Chat::where('sender_id', $senderId)->where('receiver_id', $receiverId)->update(['seen' => true]);
+        Chat::where('sender_id', $receiverId)->where('receiver_id', $senderId)->update(['seen' => true]);
 
         return response()->json($messages);
     }
@@ -62,13 +62,25 @@ class ChatController extends Controller
 
     public function getAllChatConversations() {
         $userId = auth()->user()->id;
-        $users = User::whereHas('chatConversationForUser',function($query) use ($userId) {
-            $query->where('sender_id' , $userId );
-        })->with(['chatConversationForUser' => function($query)  {
-            $query->orderBy('created_at', 'DESC')->first();
-        }])->get()->sortBy('chat_conversation_for_user.created_at');
 
-        return response()->json($users);
+        $users = User::whereHas('chatConversationAsReceiver',function($query) use ($userId) {
+            $query->where('receiver_id' , $userId )->orWhere('sender_id' , $userId );
+        })->with(['chatConversationAsReceiver' => function($query)  {
+            $query->with(['sender', 'receiver'])->orderBy('created_at', 'DESC')->first();
+        }])->get()->sortBy('chatConversationAsReceiver.created_at');
+
+        $conversations = [];
+
+        foreach ($users as $user) {
+            $chat = $user->chatConversationAsReceiver;
+            if (count($chat)) {
+                $chat = $chat[0];
+                $conversationUser = $chat->receiver->id === $userId ? $chat->sender : $chat->receiver;
+                array_push($conversations, ['date' => $chat->created_at, 'user' => $conversationUser]);
+            }
+        }
+
+        return response()->json($conversations);
     }
 
 }
