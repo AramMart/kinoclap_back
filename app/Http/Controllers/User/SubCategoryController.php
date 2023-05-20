@@ -31,9 +31,9 @@ class SubCategoryController extends Controller
     {
        try {
            $validator = Validator::make(request()->all(), [
-               'title_am' => 'required|string|min:3|max:255|unique:sub_categories',
-               'title_ru' => 'required|string|min:3|max:255|unique:sub_categories',
-               'title_en' => 'required|string|min:3|max:255|unique:sub_categories'
+               'title_am' => 'required|string|min:3|max:255',
+               'title_ru' => 'required|string|min:3|max:255',
+               'title_en' => 'required|string|min:3|max:255'
            ]);
 
            if($validator->fails()){
