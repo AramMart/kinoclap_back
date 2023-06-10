@@ -4,7 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Chat;
-use App\Models\User;
 
 class ChatController extends Controller
 {
@@ -26,7 +25,8 @@ class ChatController extends Controller
            Chat::create([
                'sender_id' => $senderId,
                'receiver_id' => $receiverIdInput,
-               'message' => $message
+               'message' => $message,
+               'group_id' => ($senderId > $receiverIdInput) ? ($senderId.''.$receiverIdInput) : ($receiverIdInput.''.$senderId)
            ]);
 
            return response()->json();
@@ -63,22 +63,8 @@ class ChatController extends Controller
     public function getAllChatConversations() {
         $userId = auth()->user()->id;
 
-        $users = User::whereHas('chatConversationAsReceiver',function($query) use ($userId) {
-            $query->where('receiver_id' , $userId )->orWhere('sender_id' , $userId );
-        })->with(['chatConversationAsReceiver' => function($query)  {
-            $query->with(['sender', 'receiver'])->orderBy('created_at', 'DESC')->first();
-        }])->get()->sortBy('chatConversationAsReceiver.created_at');
-
-        $conversations = [];
-
-        foreach ($users as $user) {
-            $chat = $user->chatConversationAsReceiver;
-            if (count($chat)) {
-                $chat = $chat[0];
-                $conversationUser = $chat->receiver->id === $userId ? $chat->sender : $chat->receiver;
-                array_push($conversations, ['date' => $chat->created_at, 'user' => $conversationUser]);
-            }
-        }
+        $conversations = Chat::with(['sender', 'receiver'])->where('receiver_id', $userId)
+            ->orWhere('sender_id', $userId)->groupBy('group_id')->get();
 
         return response()->json($conversations);
     }

@@ -40,16 +40,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Advertisement::class);
     }
 
-    public function chatConversationAsReceiver(): HasMany
-    {
-        return $this->hasMany(Chat::class,'receiver_id');
-    }
-
-    public function chatConversationAsSender(): HasMany
-    {
-        return $this->hasMany(Chat::class,'sender_id');
-    }
-
     /**
      * The attributes that should be hidden for serialization.
      *

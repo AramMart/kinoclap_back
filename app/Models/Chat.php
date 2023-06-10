@@ -19,7 +19,8 @@ class Chat extends Model
         'sender_id',
         'receiver_id',
         'message',
-        'seen'
+        'seen',
+        'group_id'
     ];
 
 
