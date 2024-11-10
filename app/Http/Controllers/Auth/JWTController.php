@@ -138,7 +138,7 @@ class JWTController extends Controller
         $user->email_verification_token = $email_verification_token;
         $user->save();
 
-        Mail::send(
+        MailSender::send(
             'auth.forgot-password',
             [
              'welcome_to' => env('MAIL_FROM_NAME'),
