@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+
 
 class JWTController extends Controller
 {
@@ -138,7 +140,7 @@ class JWTController extends Controller
         $user->email_verification_token = $email_verification_token;
         $user->save();
 
-        MailSender::send(
+        Mail::send(
             'auth.forgot-password',
             [
              'welcome_to' => env('MAIL_FROM_NAME'),
