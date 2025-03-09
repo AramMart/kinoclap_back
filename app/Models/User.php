@@ -27,7 +27,8 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'email_verification_token',
         'type',
-        'active'
+        'active',
+        'payment_date'
     ];
 
     public function profile(): HasOne
@@ -59,6 +60,18 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->getKey();
     }
+
+     public function hasPaid()
+     {
+         if (is_null($this->payment_date)) {
+             return false; // No payment made
+         }
+
+         $oneYearAgo = now()->subYear(); // Get the date one year ago
+
+         return $this->payment_date >= $oneYearAgo; // Check if payment is within the last year
+     }
+
 
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.

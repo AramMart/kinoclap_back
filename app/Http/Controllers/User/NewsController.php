@@ -13,6 +13,7 @@ class NewsController extends Controller
     public function __construct()
     {
         $this->middleware('jwt.custom_auth', ['except' => ['index']]);
+        $this->middleware('check.payment');
     }
 
     public function index(Request $request)

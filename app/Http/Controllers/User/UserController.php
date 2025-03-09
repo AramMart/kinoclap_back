@@ -12,6 +12,7 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('jwt.custom_auth');
+        $this->middleware('check.payment');
     }
 
     public function indexAdminNotApproved()

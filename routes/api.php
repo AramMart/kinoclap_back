@@ -12,8 +12,12 @@ use App\Http\Controllers\User\SubCategoryController;
 use App\Http\Controllers\User\ResourceController;
 use App\Http\Controllers\User\AdvertisementController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Auth\PaymentController;
 
 Route::group([], function($router) {
+
+    Route::post('/payment/callback', [PaymentController::class, 'paymentCallback']);
+
     // AUTHORIZATION PART
     Route::group(['prefix' => 'auth'], function() {
         Route::post('/register', [JWTController::class, 'register']);
