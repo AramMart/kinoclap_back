@@ -93,6 +93,7 @@ class PaymentController extends Controller
         $validator = Validator::make($request->all(), [
             'EDP_PAYER_ACCOUNT' => 'required|integer|exists:users,id', // Ensure user exists
         ]);
+        print_r($request->all());
 
         // If validation fails, return error response
         if ($validator->fails()) {
@@ -101,6 +102,7 @@ class PaymentController extends Controller
 
         // Retrieve the payer account (user ID)
         $payerAccount = $request->input('EDP_PAYER_ACCOUNT');
+        Log::info("Payment callback received for user ID: $payerAccount ");
 
         // Find the user
         $user = User::find($payerAccount);
