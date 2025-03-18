@@ -16,7 +16,9 @@ use App\Http\Controllers\Auth\PaymentController;
 
 Route::group([], function($router) {
 
-    Route::post('/payment/callback', [PaymentController::class, 'paymentCallback']);
+    Route::post('/payment/success', [PaymentController::class, 'paymentSuccess']);
+    Route::post('/payment/fail', [PaymentController::class, 'paymentFail']);
+    Route::post('/payment/check', [PaymentController::class, 'paymentCheck']);
 
     // AUTHORIZATION PART
     Route::group(['prefix' => 'auth'], function() {

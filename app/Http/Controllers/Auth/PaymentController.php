@@ -16,7 +16,7 @@ class PaymentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function paymentCallback(Request $request)
+    public function paymentSuccess(Request $request)
     {
         // Validate the incoming request parameters
         $validator = Validator::make($request->all(), [
@@ -58,4 +58,60 @@ class PaymentController extends Controller
             return response('User not found', 404); // If user doesn't exist
         }
     }
+
+
+    public function paymentFail(Request $request)
+    {
+        // Validate the request parameters
+        $validator = Validator::make($request->all(), [
+            'EDP_PAYER_ACCOUNT' => 'required|integer|exists:users,id', // Ensure user exists
+            'EDP_TRANS_ID' => 'required|string|max:255', // Validate transaction ID
+        ]);
+
+        // If validation fails, return error response
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        // Retrieve the payer account (user ID) and transaction ID
+        $payerAccount = $request->input('EDP_PAYER_ACCOUNT');
+        $transactionId = $request->input('EDP_TRANS_ID');
+
+        // Log the failed payment attempt
+        Log::error("Payment failed for user ID: $payerAccount, transaction ID: $transactionId");
+
+        return response()->json([
+            'status' => 'failed',
+            'message' => 'Payment could not be processed'
+        ], 400);
+    }
+
+
+    public function paymentCheck(Request $request)
+    {
+        // Validate the request parameters
+        $validator = Validator::make($request->all(), [
+            'EDP_PAYER_ACCOUNT' => 'required|integer|exists:users,id', // Ensure user exists
+        ]);
+
+        // If validation fails, return error response
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        // Retrieve the payer account (user ID)
+        $payerAccount = $request->input('EDP_PAYER_ACCOUNT');
+
+        // Find the user
+        $user = User::find($payerAccount);
+
+        if ($user) {
+            return response()->json([
+                              'status' => 'OK'
+                          ], 200);
+        } else {
+            return response()->json(['error' => 'User not found'], 403);
+        }
+    }
+
 }
