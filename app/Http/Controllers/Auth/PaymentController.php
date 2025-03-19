@@ -18,6 +18,9 @@ class PaymentController extends Controller
      */
     public function paymentSuccess(Request $request)
     {
+     Log::info('Payment confirmation requested', [
+                'request' => $request->all()
+            ]);
         // Validate the incoming request parameters
         $validator = Validator::make($request->all(), [
             'EDP_PAYER_ACCOUNT' => 'required|integer|exists:users,id', // Ensure user exists
@@ -50,13 +53,16 @@ class PaymentController extends Controller
             // Log the successful payment update
             Log::info("Payment confirmed for user ID: $payerAccount, transaction ID: $transactionId, amount: $amount");
 
-            return response('Payment confirmed', 200); // Return success response
-        } else {
+            return response()->json([
+                              'status' => 'OK'
+                          ], 200);        } else {
             // Log the error if user is not found
             Log::error("User not found for ID: $payerAccount");
 
-            return response('User not found', 404); // If user doesn't exist
-        }
+                return response()->json([
+                              'status' => 'OK'
+                          ], 403);
+            }
     }
 
 
@@ -93,7 +99,6 @@ class PaymentController extends Controller
         $validator = Validator::make($request->all(), [
             'EDP_PAYER_ACCOUNT' => 'required|integer|exists:users,id', // Ensure user exists
         ]);
-        print_r($request->all());
 
         // If validation fails, return error response
         if ($validator->fails()) {
