@@ -95,9 +95,8 @@ class PaymentController extends Controller
 
     public function paymentCheck(Request $request)
     {
-        Log::info('Payment Check requested', [
-                    'request' =>$request->query()
-                ]);
+        Log::info('Query Params:', $request->query());
+              Log::info('Request Body:', $request->all());
         // Validate the request parameters
         $validator = Validator::make($request->query(), [
             'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
