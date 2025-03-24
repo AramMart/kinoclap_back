@@ -112,8 +112,10 @@ class PaymentController extends Controller
 
         // Find the user
         $user = User::find($payerAccount);
+        Log::info("Payment callback received for user ID: $user ");
 
         if ($user) {
+                Log::info("Payment callback mtav");
             return response()->json([
                               'status' => 'OK'
                           ], 200);
