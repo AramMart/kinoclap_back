@@ -23,9 +23,9 @@ class PaymentController extends Controller
             ]);
         // Validate the incoming request parameters
         $validator = Validator::make($request->query(), [
-            'EDP_PAYER_ACCOUNT' => 'required|integer|exists:users,id', // Ensure user exists
+            'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
             'EDP_AMOUNT' => 'required|numeric|min:0', // Validate amount
-            'EDP_TRANS_ID' => 'required|string|max:255', // Validate transaction ID
+            'EDP_TRANS_ID' => 'required|string', // Validate transaction ID
         ]);
 
         // If validation fails, return error response
@@ -34,7 +34,7 @@ class PaymentController extends Controller
         }
 
         // Retrieve the POST parameters
-        $payerAccount = $request->input('EDP_PAYER_ACCOUNT'); // User ID
+        $payerAccount = $request->input('EDP_BILL_NO'); // User ID
         $amount = $request->input('EDP_AMOUNT'); // Payment amount
         $transactionId = $request->input('EDP_TRANS_ID'); // Transaction ID
 
@@ -95,9 +95,12 @@ class PaymentController extends Controller
 
     public function paymentCheck(Request $request)
     {
+        Log::info('Payment Check requested', [
+                    'request' =>$request->query()
+                ]);
         // Validate the request parameters
         $validator = Validator::make($request->query(), [
-            'EDP_PAYER_ACCOUNT' => 'required|integer|exists:users,id', // Ensure user exists
+            'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
         ]);
 
         // If validation fails, return error response
@@ -105,8 +108,8 @@ class PaymentController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        // Retrieve the payer account (user ID)
-        $payerAccount = $request->input('EDP_PAYER_ACCOUNT');
+//         // Retrieve the payer account (user ID)
+        $payerAccount = $request->input('EDP_BILL_NO');
         Log::info("Payment callback received for user ID: $payerAccount ");
 
         // Find the user
