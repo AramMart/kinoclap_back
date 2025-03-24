@@ -19,10 +19,10 @@ class PaymentController extends Controller
     public function paymentSuccess(Request $request)
     {
      Log::info('Payment confirmation requested', [
-                'request' =>$request->query()
+                'request' =>$request->all()
             ]);
         // Validate the incoming request parameters
-        $validator = Validator::make($request->query(), [
+        $validator = Validator::make($request->all(), [
             'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
             'EDP_AMOUNT' => 'required|numeric|min:0', // Validate amount
             'EDP_TRANS_ID' => 'required|string', // Validate transaction ID
@@ -95,10 +95,9 @@ class PaymentController extends Controller
 
     public function paymentCheck(Request $request)
     {
-        Log::info('Query Params:', $request->query());
               Log::info('Request Body:', $request->all());
         // Validate the request parameters
-        $validator = Validator::make($request->query(), [
+        $validator = Validator::make($request->all(), [
             'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
         ]);
 
