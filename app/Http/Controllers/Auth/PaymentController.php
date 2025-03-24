@@ -55,7 +55,8 @@ class PaymentController extends Controller
 
             return response()->json([
                               'status' => 'OK'
-                          ], 200);        } else {
+                          ], 200);
+          } else {
             // Log the error if user is not found
             Log::error("User not found for ID: $payerAccount");
 
@@ -95,7 +96,6 @@ class PaymentController extends Controller
 
     public function paymentCheck(Request $request)
     {
-              Log::info('Request Body:', $request->all());
         // Validate the request parameters
         $validator = Validator::make($request->all(), [
             'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
@@ -108,17 +108,12 @@ class PaymentController extends Controller
 
 //         // Retrieve the payer account (user ID)
         $payerAccount = $request->input('EDP_BILL_NO');
-        Log::info("Payment callback received for user ID: $payerAccount ");
 
         // Find the user
         $user = User::find($payerAccount);
-        Log::info("Payment callback received for user ID: $user ");
 
         if ($user) {
-                Log::info("Payment callback mtav");
-            return response()->json([
-                              'status' => 'OK'
-                          ], 200);
+            return response('OK', 200);
         } else {
             return response()->json(['error' => 'User not found'], 403);
         }
