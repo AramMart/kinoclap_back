@@ -53,9 +53,8 @@ class PaymentController extends Controller
             // Log the successful payment update
             Log::info("Payment confirmed for user ID: $payerAccount, transaction ID: $transactionId, amount: $amount");
 
-            return response()->json([
-                              'status' => 'OK'
-                          ], 200);
+            return response('OK', 200);
+
           } else {
             // Log the error if user is not found
             Log::error("User not found for ID: $payerAccount");
