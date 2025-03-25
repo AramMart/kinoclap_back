@@ -24,8 +24,6 @@ class PaymentController extends Controller
         // Validate the incoming request parameters
         $validator = Validator::make($request->all(), [
             'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
-            'EDP_AMOUNT' => 'required|numeric|min:0', // Validate amount
-            'EDP_TRANS_ID' => 'required|string', // Validate transaction ID
         ]);
 
         // If validation fails, return error response
@@ -35,11 +33,10 @@ class PaymentController extends Controller
 
         // Retrieve the POST parameters
         $payerAccount = $request->input('EDP_BILL_NO'); // User ID
-        $amount = $request->input('EDP_AMOUNT'); // Payment amount
-        $transactionId = $request->input('EDP_TRANS_ID'); // Transaction ID
+        $amount = 2000; // Payment amount
 
         // Log incoming request for debugging
-        Log::info("Payment callback received for user ID: $payerAccount, transaction ID: $transactionId, amount: $amount");
+        Log::info("Payment callback received for user ID: $payerAccount, amount: $amount");
 
         // Find the user based on the payer account (user ID)
         $user = User::find($payerAccount);
@@ -51,7 +48,7 @@ class PaymentController extends Controller
             $user->save();
 
             // Log the successful payment update
-            Log::info("Payment confirmed for user ID: $payerAccount, transaction ID: $transactionId, amount: $amount");
+            Log::info("Payment confirmed for user ID: $payerAccount, amount: $amount");
 
             return response('OK', 200);
 
