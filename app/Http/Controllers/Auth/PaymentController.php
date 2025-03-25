@@ -50,7 +50,8 @@ class PaymentController extends Controller
             // Log the successful payment update
             Log::info("Payment confirmed for user ID: $payerAccount, amount: $amount");
 
-            return redirect()->away('https://kinoclap.com');
+            return response('OK', 200);
+//          return redirect()->away('https://dashboard.t3slp.com/payment-success');
 
           } else {
             // Log the error if user is not found
