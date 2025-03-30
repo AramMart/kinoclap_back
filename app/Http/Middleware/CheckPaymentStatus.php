@@ -16,7 +16,7 @@ class CheckPaymentStatus
        $user = Auth::user(); // Get the authenticated user
 
        if ($user && $user->type === 'user' && !$user->hasPaid()) {
-           return response()->json(['message' => 'Access denied. Payment required.'], 408);
+           return response()->json(['message' => 'Access denied. Payment required.'], 402);
        }
 
        return $next($request); // Proceed if payment is valid or user is not logged in/admin
