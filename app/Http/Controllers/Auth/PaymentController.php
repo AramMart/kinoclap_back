@@ -92,6 +92,9 @@ class PaymentController extends Controller
 
     public function paymentCheck(Request $request)
     {
+      Log::info('Payment Check', [
+                    'request' =>$request->all()
+                ]);
         // Validate the request parameters
         $validator = Validator::make($request->all(), [
             'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
@@ -107,7 +110,7 @@ class PaymentController extends Controller
 
         // Find the user
         $user = User::find($payerAccount);
-
+        Log::info('Payment Check Success', $user);
         if ($user) {
             return response('OK', 200);
         } else {
