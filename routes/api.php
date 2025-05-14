@@ -16,7 +16,7 @@ use App\Http\Controllers\Auth\PaymentController;
 
 Route::group([], function($router) {
 
-    Route::get('/payment/success', [PaymentController::class, 'paymentSuccess']);
+    Route::post('/payment/success', [PaymentController::class, 'paymentSuccess']);
     Route::post('/payment/fail', [PaymentController::class, 'paymentFail']);
     Route::post('/payment/check', [PaymentController::class, 'paymentCheck']);
 
