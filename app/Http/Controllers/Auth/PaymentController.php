@@ -62,10 +62,10 @@ class PaymentController extends Controller
                 // Find the user
                 $user = User::find($payerAccount);
 
-                Log::info("Check confirmed: $payerAccount, amount: $amount");
+                Log::info("Check confirmed: $payerAccount");
 
                 if ($user) {
-                    Log::info("Check confirmed and user exists: $payerAccount, amount: $amount");
+                    Log::info("Check confirmed and user exists: $payerAccount");
                     return response('OK', 200);
                 } else {
                     return response()->json(['error' => 'User not found'], 403);
@@ -86,20 +86,20 @@ class PaymentController extends Controller
                     $amount = 2000; // Payment amount
 
                     // Log incoming request for debugging
-                    Log::info("Payment callback received for user ID: $payerAccount, amount: $amount");
+                    Log::info("Payment callback received for user ID: $payerAccount");
 
                     // Find the user based on the payer account (user ID)
                     $user = User::find($payerAccount);
 
                     if ($user) {
-                        Log::info("Payment callback received for user ID YUHUUU: $payerAccount, amount: $amount");
+                        Log::info("Payment callback received for user ID YUHUUU: $payerAccount");
                         // Update the payment date and amount for the user
                         $user->payment_date = now(); // Set the current date and time
                         $user->payment_amount = $amount; // Save the payment amount
                         $user->save();
 
                         // Log the successful payment update
-                        Log::info("Payment confirmed for user ID: $payerAccount, amount: $amount");
+                        Log::info("Payment confirmed for user ID: $payerAccount");
 
                         return redirect()->away('https://kinoclap.com');
 
