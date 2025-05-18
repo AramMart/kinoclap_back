@@ -10,58 +10,6 @@ use Illuminate\Support\Facades\Validator;
 
 class PaymentController extends Controller
 {
-    /**
-     * Handle the payment callback.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function paymentSuccess(Request $request)
-    {
-     Log::info('Payment confirmation requested', [
-                'request' =>$request->all()
-            ]);
-        // Validate the incoming request parameters
-        $validator = Validator::make($request->all(), [
-            'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
-        ]);
-
-        // If validation fails, return error response
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 400);
-        }
-
-        // Retrieve the POST parameters
-        $payerAccount = $request->input('EDP_BILL_NO'); // User ID
-        $amount = 2000; // Payment amount
-
-        // Log incoming request for debugging
-        Log::info("Payment callback received for user ID: $payerAccount, amount: $amount");
-
-        // Find the user based on the payer account (user ID)
-        $user = User::find($payerAccount);
-
-        if ($user) {
-            // Update the payment date and amount for the user
-            $user->payment_date = now(); // Set the current date and time
-            $user->payment_amount = $amount; // Save the payment amount
-            $user->save();
-
-            // Log the successful payment update
-            Log::info("Payment confirmed for user ID: $payerAccount, amount: $amount");
-
-            return redirect()->away('https://kinoclap.com');
-
-          } else {
-            // Log the error if user is not found
-            Log::error("User not found for ID: $payerAccount");
-
-                return response()->json([
-                              'status' => 'OK'
-                          ], 403);
-            }
-    }
-
 
     public function paymentFail(Request $request)
     {
@@ -95,27 +43,71 @@ class PaymentController extends Controller
       Log::info('Payment Check', [
                     'request' =>$request->all()
                 ]);
-        // Validate the request parameters
-        $validator = Validator::make($request->all(), [
-            'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
-        ]);
 
-        // If validation fails, return error response
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 400);
+        if ($request->input('EDP_PRECHECK')) {
+                // Validate the request parameters
+                $validator = Validator::make($request->all(), [
+                    'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
+                ]);
+
+                // If validation fails, return error response
+                if ($validator->fails()) {
+                    return response()->json(['errors' => $validator->errors()], 400);
+                }
+
+                // Retrieve the payer account (user ID)
+                $payerAccount = $request->input('EDP_BILL_NO');
+
+                // Find the user
+                $user = User::find($payerAccount);
+
+                if ($user) {
+                    return response('OK', 200);
+                } else {
+                    return response()->json(['error' => 'User not found'], 403);
+                }
+        } else if ($request->input('EDP_TRANS_ID') && $request->input('EDP_CHECKSUM')) {
+            // Validate the incoming request parameters
+                    $validator = Validator::make($request->all(), [
+                        'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
+                    ]);
+
+                    // If validation fails, return error response
+                    if ($validator->fails()) {
+                        return response()->json(['errors' => $validator->errors()], 400);
+                    }
+
+                    // Retrieve the POST parameters
+                    $payerAccount = $request->input('EDP_BILL_NO'); // User ID
+                    $amount = 2000; // Payment amount
+
+                    // Log incoming request for debugging
+                    Log::info("Payment callback received for user ID: $payerAccount, amount: $amount");
+
+                    // Find the user based on the payer account (user ID)
+                    $user = User::find($payerAccount);
+
+                    if ($user) {
+                        // Update the payment date and amount for the user
+                        $user->payment_date = now(); // Set the current date and time
+                        $user->payment_amount = $amount; // Save the payment amount
+                        $user->save();
+
+                        // Log the successful payment update
+                        Log::info("Payment confirmed for user ID: $payerAccount, amount: $amount");
+
+                        return redirect()->away('https://kinoclap.com');
+
+                      } else {
+                        // Log the error if user is not found
+                        Log::error("User not found for ID: $payerAccount");
+
+                            return response()->json([
+                                          'status' => 'OK'
+                                      ], 403);
+                        }
         }
 
-//         // Retrieve the payer account (user ID)
-        $payerAccount = $request->input('EDP_BILL_NO');
-
-        // Find the user
-        $user = User::find($payerAccount);
-
-        if ($user) {
-            return response('OK', 200);
-        } else {
-            return response()->json(['error' => 'User not found'], 403);
-        }
     }
 
 }
