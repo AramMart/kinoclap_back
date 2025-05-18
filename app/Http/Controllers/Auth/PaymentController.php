@@ -101,15 +101,14 @@ class PaymentController extends Controller
                         // Log the successful payment update
                         Log::info("Payment confirmed for user ID: $payerAccount");
 
-                        return redirect()->away('https://kinoclap.com');
+                        return response('OK', 200);
 
                       } else {
                         // Log the error if user is not found
                         Log::error("User not found for ID: $payerAccount");
 
-                            return response()->json([
-                                          'status' => 'OK'
-                                      ], 403);
+                        return response('OK', 403);
+
                         }
         }
 
