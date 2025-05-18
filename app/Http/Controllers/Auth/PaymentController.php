@@ -50,6 +50,7 @@ class PaymentController extends Controller
                     'EDP_BILL_NO' => 'required|integer|exists:users,id', // Ensure user exists
                 ]);
 
+
                 // If validation fails, return error response
                 if ($validator->fails()) {
                     return response()->json(['errors' => $validator->errors()], 400);
@@ -61,7 +62,10 @@ class PaymentController extends Controller
                 // Find the user
                 $user = User::find($payerAccount);
 
+                Log::info("Check confirmed: $payerAccount, amount: $amount");
+
                 if ($user) {
+                    Log::info("Check confirmed and user exists: $payerAccount, amount: $amount");
                     return response('OK', 200);
                 } else {
                     return response()->json(['error' => 'User not found'], 403);
@@ -88,6 +92,7 @@ class PaymentController extends Controller
                     $user = User::find($payerAccount);
 
                     if ($user) {
+                        Log::info("Payment callback received for user ID YUHUUU: $payerAccount, amount: $amount");
                         // Update the payment date and amount for the user
                         $user->payment_date = now(); // Set the current date and time
                         $user->payment_amount = $amount; // Save the payment amount
