@@ -110,9 +110,7 @@ class PaymentController extends Controller
 
         // Find the user
         $user = User::find($payerAccount);
-        Log::info('Payment Check Success', [
-         'request' =>  $user
-         ]);
+
         if ($user) {
             return response('OK', 200);
         } else {
