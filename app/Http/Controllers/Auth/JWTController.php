@@ -17,7 +17,7 @@ class JWTController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.custom_auth', ['except' => ['login', 'register', 'verifyAccount', 'forgotPassword', 'resetPassword', 'test']]);
+        $this->middleware('jwt.custom_auth', ['except' => ['login', 'register', 'verifyAccount', 'forgotPassword', 'resetPassword']]);
     }
 
     /**
@@ -94,6 +94,17 @@ class JWTController extends Controller
         }
         return response()->json(['message' => 'Sorry cannot be identify user'], 422);
     }
+
+    public function me()
+    {
+        return response()->json([
+            'user' => [
+                'general' => auth()->user(),
+                'profile' => UserProfile::where('user_id', auth()->user()->id)->with(['profileImage'])->first()
+            ]
+        ]);
+    }
+
 
     /**
      * login user
