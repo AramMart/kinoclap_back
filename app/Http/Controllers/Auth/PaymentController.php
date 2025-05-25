@@ -83,7 +83,7 @@ class PaymentController extends Controller
 
                     // Retrieve the POST parameters
                     $payerAccount = $request->input('EDP_BILL_NO'); // User ID
-                    $amount = 2000; // Payment amount
+                    $amount = 4000; // Payment amount
 
                     // Log incoming request for debugging
                     Log::info("Payment callback received for user ID: $payerAccount");
